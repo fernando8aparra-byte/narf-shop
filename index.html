@@ -1,208 +1,262 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Tenis Premium - Compra Directa</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --navy: #0a1d37;           /* Azul marino apagado */
-            --gold: #c9a96e;           /* Dorado nubloso / envejecido */
-            --gold-dark: #a67c52;
-            --bg-light: #f8f9fa;
-            --text-dark: #1a1a1a;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sneakers Premium - Hermosillo</title>
+  <style>
+    :root {
+      --navy: #1a2b4c;          /* Azul marino apagado */
+      --gold: #c5a880;          /* Dorado nubloso principal */
+      --gold-dark: #b89778;     /* Dorado hover */
+      --text-light: #f5f5f5;
+      --text-dark: #d0d0d0;
+      --bg-dark: #0f1621;
+      --nf-overlay: rgba(0,0,0,0.75);
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-            line-height: 1.6;
-        }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      line-height: 1.6;
+    }
 
-        /* Header / Hero */
-        header {
-            background: linear-gradient(rgba(10, 29, 55, 0.85), rgba(10, 29, 55, 0.75)),
-                        url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
-            color: white;
-            text-align: center;
-            padding: 180px 20px 140px;
-            position: relative;
-        }
+    /* Header / Intro estilo McQueen + rayo dorado */
+    header {
+      background: linear-gradient(rgba(15, 22, 33, 0.92), rgba(15, 22, 33, 0.85)),
+                  url('https://images.stockx.com/images/Alexander-McQueen-Oversized-Light-Gold-Product.jpg?fit=fill&bg=FFFFFF&w=1400&h=1000&fm=webp&auto=compress&q=90') center center / cover no-repeat;
+      background-blend-mode: multiply;
+      padding: 6rem 2rem 7rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
 
-        header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 4.5rem;
-            letter-spacing: 3px;
-            margin-bottom: 1rem;
-            text-shadow: 0 4px 12px rgba(0,0,0,0.6);
-        }
+    /* Rayo dorado atravesando (efecto diagonal) */
+    header::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: linear-gradient(
+        135deg,
+        transparent 40%,
+        rgba(197,168,128,0.35) 45%,
+        rgba(197,168,128,0.6) 50%,
+        rgba(197,168,128,0.35) 55%,
+        transparent 60%
+      );
+      transform: rotate(25deg);
+      animation: lightning 8s infinite linear;
+      pointer-events: none;
+      opacity: 0.7;
+    }
 
-        header .subtitle {
-            font-size: 1.5rem;
-            font-weight: 400;
-            letter-spacing: 2px;
-            opacity: 0.95;
-            margin-bottom: 2.5rem;
-        }
+    @keyframes lightning {
+      0%   { transform: translateX(-100%) rotate(25deg); }
+      100% { transform: translateX(100%)  rotate(25deg); }
+    }
 
-        .btn-primary {
-            display: inline-block;
-            background-color: var(--gold);
-            color: var(--navy);
-            font-weight: 700;
-            padding: 1rem 2.8rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 1.3rem;
-            letter-spacing: 1.5px;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-        }
+    /* Letras NF sutiles / casi invisibles en negro */
+    header::after {
+      content: "NF NF NF NF NF";
+      position: absolute;
+      inset: 0;
+      font-size: 18rem;
+      font-weight: 900;
+      color: rgba(0,0,0,0.25);
+      letter-spacing: -0.5rem;
+      line-height: 0.7;
+      user-select: none;
+      pointer-events: none;
+      text-align: center;
+      overflow: hidden;
+      opacity: 0.4;
+    }
 
-        .btn-primary:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 35px rgba(0,0,0,0.5);
-            background-color: var(--gold-dark);
-        }
+    .logo {
+      font-size: 4.2rem;
+      font-weight: 900;
+      letter-spacing: 6px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      text-shadow: 0 6px 20px rgba(197,168,128,0.5);
+      position: relative;
+      z-index: 2;
+    }
 
-        /* Index / Navegación */
-        .index-nav {
-            background-color: var(--navy);
-            padding: 1.5rem 0;
-            text-align: center;
-        }
+    .tagline {
+      font-size: 1.9rem;
+      font-weight: 300;
+      color: var(--text-dark);
+      margin-bottom: 1.5rem;
+      max-width: 780px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      z-index: 2;
+    }
 
-        .index-nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            gap: 4rem;
-            flex-wrap: wrap;
-        }
+    .pitch {
+      font-size: 1.45rem;
+      color: #e0c070;
+      font-weight: 500;
+      margin: 1.5rem 0 3rem;
+      letter-spacing: 1px;
+      position: relative;
+      z-index: 2;
+    }
 
-        .index-nav li a {
-            color: white;
-            text-decoration: none;
-            font-size: 1.4rem;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            position: relative;
-            transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.8rem;
-        }
+    .cta-button {
+      display: inline-block;
+      background-color: var(--gold);
+      color: var(--navy);
+      font-size: 1.7rem;
+      font-weight: bold;
+      padding: 1.3rem 3.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      transition: all 0.35s ease;
+      box-shadow: 0 10px 30px rgba(197,168,128,0.45);
+      position: relative;
+      z-index: 2;
+    }
 
-        .index-nav li a:hover {
-            color: var(--gold);
-        }
+    .cta-button:hover {
+      background-color: var(--gold-dark);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(197,168,128,0.55);
+    }
 
-        .index-nav li a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 3px;
-            bottom: -10px;
-            left: 0;
-            background-color: var(--gold);
-            transition: width 0.4s ease;
-        }
+    /* Menú / Índice */
+    nav {
+      background-color: rgba(26, 43, 76, 0.94);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 1.2rem 2rem;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+    }
 
-        .index-nav li a:hover::after {
-            width: 100%;
-        }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      gap: 5rem;
+    }
 
-        .gender-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 3px solid var(--gold);
-            overflow: hidden;
-            background-size: cover;
-            background-position: center;
-        }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: var(--text-light);
+      transition: all 0.3s ease;
+    }
 
-        /* Sección Intro */
-        .intro-section {
-            max-width: 1100px;
-            margin: 100px auto;
-            padding: 0 30px;
-            text-align: center;
-        }
+    .nav-item:hover {
+      color: var(--gold);
+      transform: translateY(-6px);
+    }
 
-        .intro-section h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3.2rem;
-            color: var(--navy);
-            margin-bottom: 1.5rem;
-        }
+    .nav-item img {
+      width: 110px;
+      height: 110px;
+      object-fit: contain;
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 5px 12px rgba(0,0,0,0.7));
+    }
 
-        .intro-section p {
-            font-size: 1.25rem;
-            max-width: 800px;
-            margin: 0 auto 2.5rem;
-            color: #444;
-        }
+    .nav-item span {
+      font-size: 1.3rem;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
 
-        @media (max-width: 768px) {
-            header h1 { font-size: 3.2rem; }
-            header { padding: 140px 15px 100px; }
-            .index-nav ul { gap: 2rem; flex-direction: column; }
-            .gender-icon { width: 100px; height: 100px; }
-        }
-    </style>
+    /* Responsive */
+    @media (max-width: 768px) {
+      header {
+        padding: 5rem 1.5rem 6rem;
+      }
+
+      .logo {
+        font-size: 3.2rem;
+      }
+
+      .tagline {
+        font-size: 1.5rem;
+      }
+
+      .pitch {
+        font-size: 1.25rem;
+      }
+
+      .nav-container {
+        flex-direction: column;
+        gap: 2.5rem;
+      }
+
+      .cta-button {
+        font-size: 1.4rem;
+        padding: 1.1rem 3rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Hero Section estilo Nike -->
-    <header>
-        <h1>PREMIUM PERFORMANCE</h1>
-        <p class="subtitle">Tecnología de punta. Diseño impecable. Rendimiento sin límites.</p>
-        <a href="#catalogo" class="btn-primary">COMPRA DIRECTA AQUÍ</a>
-        <p style="margin-top: 2rem; font-size: 1.3rem; opacity: 0.9;">
-            Pares de calidad • Envío gratis • Garantía de satisfacción
-        </p>
-    </header>
+  <!-- Menú / Índice -->
+  <nav>
+    <div class="nav-container">
+      <a href="#hombre" class="nav-item">
+        <img src="https://www.shutterstock.com/image-vector/mens-shoe-black-silhouette-vector-260nw-2502099183.jpg" 
+             alt="Tenis de Hombre">
+        <span>Tenis de Hombre</span>
+      </a>
+      
+      <a href="#mujer" class="nav-item">
+        <img src="https://cdn.vectorstock.com/i/1000v/30/89/flat-silhouette-shoes-or-sneakers-icon-set-vector-48123089.jpg" 
+             alt="Tenis de Mujer">
+        <span>Tenis de Mujer</span>
+      </a>
+    </div>
+  </nav>
 
-    <!-- Barra de navegación / Index con imágenes -->
-    <nav class="index-nav">
-        <ul>
-            <li>
-                <a href="#hombres">
-                    <div class="gender-icon" style="background-image: url('https://images.unsplash.com/photo-1552374196-1ab2a1c0f0b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
-                    TENIS DE HOMBRE
-                </a>
-            </li>
-            <li>
-                <a href="#mujeres">
-                    <div class="gender-icon" style="background-image: url('https://images.unsplash.com/photo-1599566150163-7d1a6c9e6d2e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
-                    TENIS DE MUJER
-                </a>
-            </li>
-        </ul>
-    </nav>
+  <!-- Introducción estilo premium McQueen -->
+  <header>
+    <div class="logo">SNEAKERS PREMIUM</div>
+    
+    <p class="tagline">
+      Los mejores sneakers premium de Hermosillo, Sonora
+    </p>
 
-    <!-- Sección introductoria -->
-    <section class="intro-section">
-        <h2>Elige tu movimiento</h2>
-        <p>
-            Cada paso cuenta. Cada diseño inspira. Descubre la nueva colección de tenis premium con tecnología avanzada, materiales de primera calidad y un estilo que define tu personalidad. 
-            Envío gratis a todo México y la garantía que mereces.
-        </p>
-        <a href="#catalogo" class="btn-primary">VER CATÁLOGO COMPLETO</a>
-    </section>
+    <div class="pitch">
+      Estilo que rompe esquemas • Calidad que se siente • Exclusividad que se vive
+    </div>
+    
+    <a href="#catalogo" class="cta-button">COMPRA DIRECTA AQUÍ!!</a>
+  </header>
 
-    <!-- Aquí iría el catálogo de productos... -->
+  <!-- Puedes poner aquí tu catálogo con id="hombre" e id="mujer" -->
+  <main style="padding: 5rem 2rem; text-align: center;">
+    <h2 style="font-size: 3rem; color: var(--gold); margin-bottom: 2rem;">Colección Exclusiva</h2>
+    <p style="font-size: 1.4rem; max-width: 900px; margin: 0 auto 4rem; color: #ccc;">
+      Descubre los diseños más deseados con el toque premium que solo encuentras con nosotros.
+    </p>
+  </main>
 
 </body>
 </html>
