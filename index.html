@@ -33,4 +33,294 @@
 
     /* Header - concepto actualizado con letras negras + brillo dorado */
     header {
-      background: linear-gradient(to bottom, rgba(8
+      background: linear-gradient(to bottom, rgba(8,18,29,0.92), rgba(8,18,29,0.85)),
+                  url('https://images.stockx.com/images/Alexander-McQueen-Oversized-Light-Gold-Product.jpg?fit=fill&bg=FFFFFF&w=1400&h=1000&fm=webp&auto=compress&q=90') center / cover;
+      background-blend-mode: multiply;
+      padding: 8rem 2rem 9rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Rayo dorado atravesando sneakers (más brillante y juvenil) */
+    header::before {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      background: linear-gradient(
+        135deg,
+        transparent 40%,
+        var(--shadow-gold) 48%,
+        var(--gold-light) 52%,
+        var(--shadow-gold) 56%,
+        transparent 64%
+      );
+      transform: rotate(32deg);
+      animation: rayo 10s infinite linear;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    @keyframes rayo {
+      0%   { transform: translateX(-130%) rotate(32deg); }
+      100% { transform: translateX(130%)  rotate(32deg); }
+    }
+
+    /* NF sutil en fondo (invisible-visible, ahora con toque dorado sutil) */
+    header::after {
+      content: "NF  NF  NF";
+      position: absolute;
+      inset: 0;
+      font-size: 22rem;
+      font-weight: 900;
+      color: rgba(0,0,0,0.22);
+      letter-spacing: -1.2rem;
+      line-height: 0.6;
+      pointer-events: none;
+      user-select: none;
+      opacity: 0.3;
+      text-shadow: 0 0 10px var(--shadow-gold); /* Brillo dorado sutil */
+    }
+
+    .logo {
+      font-size: 5.2rem;
+      font-weight: 900;
+      letter-spacing: 10px;
+      color: var(--text-black);       /* Negro principal */
+      text-transform: uppercase;
+      text-shadow: 0 0 15px var(--gold-light), 0 0 25px var(--shadow-gold); /* Brillo dorado */
+      margin-bottom: 1.2rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .tagline {
+      font-size: 2.2rem;
+      font-weight: 300;
+      color: var(--text-white);       /* Blanco para pequeñas letras */
+      margin-bottom: 2rem;
+      max-width: 820px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .pitch {
+      font-size: 1.65rem;
+      color: var(--text-white);       /* Blanco para pitch */
+      font-weight: 500;
+      margin: 2.2rem 0 4rem;
+      letter-spacing: 1.3px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--gold-premium), var(--gold-light));
+      color: var(--deep-navy);
+      font-size: 1.9rem;
+      font-weight: bold;
+      padding: 1.5rem 4.5rem;
+      border-radius: 70px;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 3.5px;
+      box-shadow: 0 12px 40px var(--shadow-gold);
+      transition: all 0.4s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .cta-button:hover {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold-premium));
+      transform: translateY(-8px) scale(1.04);
+      box-shadow: 0 25px 60px rgba(255, 215, 0, 0.55);
+    }
+
+    /* Logo caricaturesco en esquina superior izquierda - rayo dorado juguetón */
+    .brand-logo {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      width: 80px;
+      height: 80px;
+      background: url('https://img.freepik.com/premium-vector/cartoon-lightning-bolt-icon-funny-thunder-strike_91130-1132.jpg') center / contain no-repeat; /* Placeholder caricaturesco rayo */
+      filter: drop-shadow(0 0 10px var(--gold-light));
+      z-index: 3;
+      animation: pulse-rayo 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse-rayo {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+
+    /* Navegación - con toques juveniles */
+    nav {
+      background-color: rgba(8,18,29,0.96);
+      backdrop-filter: blur(14px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 1.6rem 2rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.65);
+    }
+
+    .nav-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      gap: 7rem;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: var(--text-white);
+      transition: all 0.4s ease;
+    }
+
+    .nav-item:hover {
+      color: var(--gold-light);
+      transform: translateY(-10px);
+    }
+
+    .nav-item img {
+      width: 130px;
+      height: 130px;
+      object-fit: contain;
+      margin-bottom: 1.4rem;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,0.75));
+      position: relative;
+    }
+
+    /* Rayo dorado atravesando cada sneaker en nav (juvenil y dinámico) */
+    .nav-item img::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: -50%; width: 200%; height: 2px;
+      background: linear-gradient(to right, transparent, var(--gold-light), transparent);
+      transform: rotate(-15deg);
+      opacity: 0.7;
+    }
+
+    .nav-item span {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--text-white); /* Blanco para pequeñas letras */
+    }
+
+    /* Sección de historia y pitch - tocante y confiable */
+    .story-section {
+      background: linear-gradient(to bottom, var(--navy-dark), var(--deep-navy));
+      padding: 5rem 2rem;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto 4rem;
+    }
+
+    .story-title {
+      font-size: 2.5rem;
+      color: var(--gold-premium);
+      margin-bottom: 2rem;
+      text-shadow: 0 0 10px var(--shadow-gold);
+    }
+
+    .story-text {
+      font-size: 1.3rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .story-text strong {
+      color: var(--text-white);
+    }
+
+    .instagram-link {
+      color: var(--gold-light);
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    .instagram-link:hover {
+      color: var(--accent-yellow);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header          { padding: 6.5rem 1.5rem 8rem; }
+      .logo           { font-size: 4rem; }
+      .tagline        { font-size: 1.8rem; }
+      .pitch          { font-size: 1.4rem; }
+      .cta-button     { font-size: 1.6rem; padding: 1.3rem 4rem; }
+      .nav-container  { flex-direction: column; gap: 3.5rem; }
+      .brand-logo     { width: 60px; height: 60px; }
+      .story-section  { padding: 4rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Logo caricaturesco en esquina -->
+  <div class="brand-logo"></div>
+
+  <nav>
+    <div class="nav-container">
+      <a href="#hombre" class="nav-item">
+        <img src="https://www.shutterstock.com/image-vector/mens-shoe-black-silhouette-vector-260nw-2502099183.jpg" alt="Tenis Hombre">
+        <span>Tenis de Hombre</span>
+      </a>
+      
+      <a href="#mujer" class="nav-item">
+        <img src="https://cdn.vectorstock.com/i/1000v/30/89/flat-silhouette-shoes-or-sneakers-icon-set-vector-48123089.jpg" alt="Tenis Mujer">
+        <span>Tenis de Mujer</span>
+      </a>
+    </div>
+  </nav>
+
+  <header>
+    <div class="logo">SNEAKERS PREMIUM</div>
+    
+    <p class="tagline">
+      Los mejores sneakers premium de Hermosillo, Sonora
+    </p>
+
+    <div class="pitch">
+      Estilo que rompe esquemas • Calidad que se siente • Exclusividad que se vive
+    </div>
+    
+    <a href="#catalogo" class="cta-button">COMPRA DIRECTA AQUÍ!!</a>
+  </header>
+
+  <!-- Sección de historia y pitch emprendedor -->
+  <section class="story-section">
+    <h2 class="story-title">Nuestra Historia</h2>
+    <p class="story-text">
+      Hola, soy <strong>Luis</strong>, un emprendedor de 23 años nacido y criado en Hermosillo, Sonora. Desde que era adolescente, me apasionaban los sneakers: no solo por su estilo, sino por cómo representan movimiento, creatividad y superación. Hace 2 años, decidí convertir esa pasión en un negocio, seleccionando personalmente los mejores pares premium inspirados en marcas icónicas como Nike y Alexander McQueen, pero con un toque único y accesible para nuestra comunidad.
+    </p>
+    <p class="story-text">
+      Empecé en un pequeño garage, probando estilos y escuchando a amigos y clientes para entender qué buscan en un sneaker perfecto. Hoy, con experiencia en el mercado local, ofrezco calidad premium, envíos gratis y un servicio que te hace sentir como parte de la familia. Mi meta es que cada par que lleves te impulse a conquistar el día con confianza y estilo.
+    </p>
+    <p class="story-text">
+      ¡Sígueme en Instagram <a href="https://instagram.com/luis_sneakers_premium" class="instagram-link">@luis_sneakers_premium</a> para ver novedades, historias detrás de cada diseño y ofertas exclusivas! Juntos, hagamos que Hermosillo brille con el mejor footwear.
+    </p>
+  </section>
+
+  <!-- Espacio para catálogo -->
+  <main style="padding: 7rem 2rem; text-align: center;">
+    <h2 style="font-size: 4rem; color: var(--gold-premium); margin-bottom: 2.5rem; letter-spacing: 2px;">
+      Colección Exclusiva
+    </h2>
+  </main>
+
+</body>
+</html>
