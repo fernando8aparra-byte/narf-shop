@@ -110,9 +110,6 @@
             flex-direction: column;
             height: 100%;
             position: relative;
-            min-width: 280px;
-            max-width: 300px;
-            flex: 0 0 290px;
         }
         .product-card:hover { transform: translateY(-10px); }
         .product-img {
@@ -161,31 +158,6 @@
             justify-content: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
-        /* Scroll horizontal de productos */
-        #productsScrollContainer {
-            display: flex;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
-            padding: 20px 0;
-            gap: 30px;
-            scrollbar-width: none;
-            padding-left: 10px;
-            padding-right: 10px;
-        }
-        #productsScrollContainer::-webkit-scrollbar {
-            display: none;
-        }
-        #coleccion {
-            background-color: #ffffff;
-            color: #000000;
-            padding-bottom: 60px;
-            overflow: hidden;
-        }
-        #coleccion .container {
-            max-width: 100%;
-        }
         .preview-img {
             width: 80px;
             height: 80px;
@@ -227,6 +199,14 @@
         .btn-listo.confirmed {
             background: #1e7e34;
         }
+        #coleccion {
+            background-color: #ffffff;
+            color: #000000;
+            padding-bottom: 60px;
+        }
+        #coleccion h2 {
+            color: #000000;
+        }
         .auth-modal .nav-tabs {
             border-bottom: 2px solid var(--accent-gold);
         }
@@ -255,6 +235,7 @@
             border: 1px solid #444;
             color: var(--accent-gold);
         }
+        /* Responsive */
         @media (max-width: 992px) {
             .hero { height: 65vh; }
             .hero-logo { max-width: 110px; max-height: 110px; }
@@ -262,17 +243,15 @@
         @media (max-width: 768px) {
             .hero { height: 60vh; }
             .hero-logo { max-width: 100px; max-height: 100px; padding: 8px; }
-            .product-card { min-width: 260px; flex: 0 0 260px; }
             .product-img { height: 220px; }
         }
         @media (max-width: 576px) {
             .hero { height: 55vh; min-height: 420px; }
             .hero-logo { max-width: 90px; max-height: 90px; padding: 6px; }
-            .product-card { min-width: 220px; flex: 0 0 220px; }
-            .product-img { height: 200px; }
             .navbar-brand { font-size: 1.1rem; margin-right: 0.2rem; }
             .search-input, .search-btn { height: 38px; }
             .nav-icon { font-size: 1.3rem; }
+            .product-img { height: 200px; }
             .search-container { margin: 0 0.2rem; }
         }
     </style>
@@ -315,18 +294,20 @@
     </section>
     <!-- Colección -->
     <section id="coleccion" class="py-5">
-        <div class="container px-4 px-lg-5">
-            <h2 class="display-6 text-center mb-5">Colección Principal</h2>
-            <div class="text-center mb-5 d-flex justify-content-center gap-3 flex-wrap admin-only">
-                <button class="btn btn-warning btn-lg" data-bs-toggle="modal" data-bs-target="#addProductModal">
-                    + Agregar Producto
-                </button>
-                <button class="btn btn-danger btn-lg" id="openDeleteMultipleModal">
-                    Eliminar Productos
-                </button>
+        <div class="container-fluid px-0">
+            <div class="container px-4 px-lg-5">
+                <h2 class="display-6 text-center mb-5">Colección Principal</h2>
+                <div class="text-center mb-5 d-flex justify-content-center gap-3 flex-wrap admin-only">
+                    <button class="btn btn-warning btn-lg" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                        + Agregar Producto
+                    </button>
+                    <button class="btn btn-danger btn-lg" id="openDeleteMultipleModal">
+                        Eliminar Productos
+                    </button>
+                </div>
             </div>
-            <div id="productsScrollContainer">
-                <!-- Los productos se cargan aquí con scroll horizontal -->
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6 g-4 g-lg-5 px-4 px-lg-5" id="productsContainer">
+                <!-- Productos se cargan aquí -->
             </div>
         </div>
     </section>
@@ -475,7 +456,6 @@
         const storage = getStorage(app);
         const provider = new GoogleAuthProvider();
 
-        // SOLO ESTOS DOS EMAILS SON ADMINS (insensible a mayúsculas)
         const admins = ["fernando8aparra@gmail.com", "luisatondo28@gmail.com"];
 
         let editMode = false;
@@ -781,15 +761,15 @@
         };
 
         async function loadProducts() {
-            const container = document.getElementById('productsScrollContainer');
-            container.innerHTML = '<div class="text-center my-5 w-100"><div class="spinner-border text-warning" role="status"></div></div>';
+            const container = document.getElementById('productsContainer');
+            container.innerHTML = '<div class="col-12 text-center my-5"><div class="spinner-border text-warning" role="status"></div></div>';
             try {
                 const snapshot = await getDocs(collection(db, "products"));
                 container.innerHTML = '';
                 allProducts = [];
 
                 if (snapshot.empty) {
-                    container.innerHTML = '<p class="text-center text-muted w-100">No hay productos aún.</p>';
+                    container.innerHTML = '<div class="col-12 text-center text-muted">No hay productos aún.</div>';
                     return;
                 }
 
@@ -801,31 +781,31 @@
                     const img = d.images && d.images.length > 0 ? d.images[0] : 'https://via.placeholder.com/300x270?text=Sin+Imagen';
                     const descBreve = d.description ? d.description.substring(0, 120) + (d.description.length > 120 ? '...' : '') : 'Sin descripción';
 
-                    const productHTML = `
-                        <div class="product-card">
-                            <div class="position-absolute top-0 end-0 p-3 admin-only admin-controls d-flex flex-column gap-2">
-                                <button class="btn btn-warning" onclick="editProduct('${id}')">
-                                    <i class="bi bi-pencil-fill"></i>
-                                </button>
-                                <button class="btn btn-danger" onclick="deleteProduct('${id}')">
-                                    <i class="bi bi-trash-fill"></i>
-                                </button>
-                            </div>
-                            <img src="${img}" class="product-img" alt="${d.title}">
-                            <div class="product-info">
-                                <h6 class="product-title">${d.title}</h6>
-                                <p class="product-desc">${descBreve}</p>
-                                <div class="d-flex justify-content-between align-items-center mt-auto">
-                                    <span class="product-price">$${d.price?.toLocaleString() || '0'} MXN</span>
-                                    <a href="product.html?id=${id}" class="btn btn-warning btn-sm">Ver más</a>
+                    container.innerHTML += `
+                        <div class="col">
+                            <div class="product-card">
+                                <div class="position-absolute top-0 end-0 p-3 admin-only admin-controls d-flex flex-column gap-2">
+                                    <button class="btn btn-warning" onclick="editProduct('${id}')">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </button>
+                                    <button class="btn btn-danger" onclick="deleteProduct('${id}')">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </div>
+                                <img src="${img}" class="product-img" alt="${d.title}">
+                                <div class="product-info">
+                                    <h6 class="product-title">${d.title}</h6>
+                                    <p class="product-desc">${descBreve}</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                                        <span class="product-price">$${d.price?.toLocaleString() || '0'} MXN</span>
+                                        <a href="product.html?id=${id}" class="btn btn-warning btn-sm">Ver más</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>`;
-
-                    container.innerHTML += productHTML;
                 });
             } catch (err) {
-                container.innerHTML = '<p class="text-center text-danger w-100">Error al cargar productos.</p>';
+                container.innerHTML = '<div class="col-12 text-center text-danger">Error al cargar productos.</div>';
             }
         }
 
