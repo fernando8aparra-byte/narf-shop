@@ -242,7 +242,7 @@
       border: 1px solid #444;
       color: var(--accent-gold);
     }
-    /* Responsive optimizado */
+    /* Responsive */
     @media (max-width: 992px) {
       .hero { height: 65vh; }
       .hero-logo { max-width: 110px; max-height: 110px; }
@@ -279,7 +279,7 @@
           <a class="nav-icon" id="userDropdownToggle" href="#" role="button">
             <i class="bi bi-person"></i>
           </a>
-          <div id="mobileUserName" class="d-block d-lg-none text-light text-center" style="font-size: 0.8rem; margin-top: 2px;"></div>
+          <div id="mobileUserName" class="d-block d-lg-none text-light text-center mt-1" style="font-size: 0.8rem;"></div>
           <ul class="dropdown-menu dropdown-menu-end" id="userDropdownMenu">
             <li><div class="user-name-dropdown" id="userNameDisplay"></div></li>
             <li><hr class="dropdown-divider"></li>
@@ -405,7 +405,7 @@
               <div id="sizesContainer" class="row g-3"></div>
             </div>
             <div class="mb-3">
-              <label>Imágenes del producto (múltiples) - En edición se agregan a las existentes</label>
+              <label>Imágenes del producto (múltiples)</label>
               <input type="file" id="prodImages" class="form-control" accept="image/*" multiple>
               <div id="imagePreview" class="mt-3 d-flex flex-wrap justify-content-center"></div>
             </div>
@@ -456,15 +456,6 @@
       }
     }
 
-    window.userSignOut = async () => {
-      try {
-        await signOut(auth);
-        alert("Sesión cerrada correctamente");
-      } catch (e) {
-        alert("Error al cerrar sesión: " + e.message);
-      }
-    };
-
     // Generar tallas dinámicamente
     function populateSizes() {
       const container = document.getElementById('sizesContainer');
@@ -488,7 +479,6 @@
         container.innerHTML += html;
       }
 
-      // Mostrar/ocultar cantidad al marcar checkbox
       document.querySelectorAll('.size-checkbox').forEach(cb => {
         cb.addEventListener('change', function() {
           const size = this.value;
@@ -543,7 +533,6 @@
       await loadProducts();
     });
 
-    // Resto de funciones (login, register, etc.) sin cambios importantes
     window.login = async () => {
       const email = document.getElementById('loginEmail').value.trim();
       const pass = document.getElementById('loginPassword').value;
@@ -586,15 +575,213 @@
       btn.textContent = '¡Confirmado!';
     };
 
-    // ... (el resto de funciones editProduct, deleteProduct, saveProduct, loadProducts quedan igual que en tu código original)
-
-    // Cierre de sesión funcional
-    document.getElementById('logoutLink').addEventListener('click', (e) => {
-      e.preventDefault();
-      userSignOut();
+    document.getElementById('prodImages').addEventListener('change', (e) => {
+      const preview = document.getElementById('imagePreview');
+      preview.innerHTML = '';
+      for (let file of e.target.files) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const img = document.createElement('img');
+          img.src = ev.target.result;
+          img.className = 'preview-img';
+          preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
     });
 
-    // Ajuste dinámico del padding para navbar fixed
+    window.editProduct = async (productId) => {
+      try {
+        const docSnap = await getDoc(doc(db, "products", productId));
+        if (!docSnap.exists()) return alert("Producto no encontrado");
+        const data = docSnap.data();
+
+        document.getElementById('prodTitle').value = data.title || '';
+        document.getElementById('prodType').value = data.type || '';
+        document.getElementById('prodDescription').value = data.description || '';
+        document.getElementById('prodPrice').value = data.price || '';
+
+        document.querySelectorAll('.size-checkbox').forEach(cb => {
+          const s = cb.value;
+          const qtyInput = document.getElementById('qty' + s);
+          const box = document.getElementById('quantity' + s);
+          const btn = box.querySelector('.btn-listo');
+          if (data.stock && data.stock[s] > 0) {
+            cb.checked = true;
+            qtyInput.value = data.stock[s];
+            box.style.display = 'block';
+            btn.classList.add('confirmed');
+            btn.textContent = '¡Confirmado!';
+          } else {
+            cb.checked = false;
+            qtyInput.value = 0;
+            box.style.display = 'none';
+            btn.classList.remove('confirmed');
+            btn.textContent = 'Listo';
+          }
+        });
+
+        const preview = document.getElementById('imagePreview');
+        preview.innerHTML = '';
+        if (data.images && data.images.length > 0) {
+          data.images.forEach(url => {
+            const img = document.createElement('img');
+            img.src = url;
+            img.className = 'preview-img';
+            preview.appendChild(img);
+          });
+        }
+
+        document.querySelector('#addProductModal .modal-title').textContent = 'Editar Producto';
+        editMode = true;
+        currentProductId = productId;
+        const modal = new bootstrap.Modal(document.getElementById('addProductModal'));
+        modal.show();
+      } catch (err) {
+        console.error(err);
+        alert("Error al cargar producto");
+      }
+    };
+
+    window.deleteProduct = async (productId) => {
+      if (!confirm("¿Eliminar este producto? No se puede deshacer.")) return;
+      try {
+        await deleteDoc(doc(db, "products", productId));
+        const folderRef = ref(storage, `narf-shop/${productId}`);
+        const listResult = await listAll(folderRef);
+        for (const itemRef of listResult.items) {
+          await deleteObject(itemRef);
+        }
+        await loadProducts();
+        alert("Producto eliminado");
+      } catch (err) {
+        alert("Error al eliminar: " + err.message);
+      }
+    };
+
+    window.saveProduct = async () => {
+      const title = document.getElementById('prodTitle').value.trim();
+      const type = document.getElementById('prodType').value.trim();
+      const description = document.getElementById('prodDescription').value.trim();
+      const price = Number(document.getElementById('prodPrice').value);
+      const files = document.getElementById('prodImages').files;
+
+      if (!title || !type || !description || isNaN(price) || price < 0) {
+        return alert("Completa todos los campos obligatorios correctamente.");
+      }
+
+      const stock = {};
+      let hasStock = false;
+      for (let s = 23; s <= 30; s++) {
+        if (document.getElementById('size' + s).checked) {
+          const qty = parseInt(document.getElementById('qty' + s).value) || 0;
+          if (qty > 0) {
+            stock[s] = qty;
+            hasStock = true;
+          }
+        }
+      }
+      if (!hasStock) return alert("Indica al menos una talla con cantidad > 0.");
+
+      if (!editMode && files.length === 0) return alert("Selecciona al menos una imagen.");
+
+      try {
+        let productId = currentProductId;
+        let existingImages = [];
+
+        if (editMode) {
+          const snap = await getDoc(doc(db, "products", currentProductId));
+          existingImages = snap.data()?.images || [];
+          await updateDoc(doc(db, "products", currentProductId), { title, type, description, price, stock });
+        } else {
+          const docRef = await addDoc(collection(db, "products"), { title, type, description, price, stock, images: [] });
+          productId = docRef.id;
+        }
+
+        const newUrls = [];
+        if (files.length > 0) {
+          for (let file of files) {
+            const storageRef = ref(storage, `narf-shop/${productId}/${Date.now()}_${file.name}`);
+            await uploadBytes(storageRef, file);
+            const url = await getDownloadURL(storageRef);
+            newUrls.push(url);
+          }
+        }
+
+        const finalImages = editMode ? [...existingImages, ...newUrls] : newUrls;
+        await updateDoc(doc(db, "products", productId), { images: finalImages });
+
+        bootstrap.Modal.getInstance(document.getElementById('addProductModal')).hide();
+        document.getElementById('addProductForm').reset();
+        document.getElementById('imagePreview').innerHTML = '';
+        document.querySelectorAll('.size-quantity-box').forEach(b => b.style.display = 'none');
+        document.querySelectorAll('.btn-listo').forEach(b => {
+          b.classList.remove('confirmed');
+          b.textContent = 'Listo';
+        });
+        document.querySelectorAll('.size-checkbox').forEach(cb => cb.checked = false);
+        document.querySelector('#addProductModal .modal-title').textContent = 'Agregar Nuevo Producto';
+        editMode = false;
+        currentProductId = null;
+
+        await loadProducts();
+        alert(editMode ? "Producto actualizado" : "Producto agregado");
+      } catch (err) {
+        console.error(err);
+        alert("Error al guardar: " + err.message);
+      }
+    };
+
+    async function loadProducts() {
+      const container = document.getElementById('productsContainer');
+      container.innerHTML = '<div class="text-center my-5"><div class="spinner-border text-warning" role="status"></div></div>';
+      try {
+        const snapshot = await getDocs(collection(db, "products"));
+        container.innerHTML = '';
+        if (snapshot.empty) {
+          container.innerHTML = '<p class="text-center text-muted col-12">No hay productos aún.</p>';
+          return;
+        }
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          const img = d.images && d.images.length > 0 ? d.images[0] : 'https://via.placeholder.com/300x270?text=Sin+Imagen';
+          const descBreve = d.description ? d.description.substring(0, 120) + (d.description.length > 120 ? '...' : '') : 'Sin descripción';
+          container.innerHTML += `
+            <div class="col">
+              <div class="product-card">
+                <div class="position-absolute top-0 end-0 p-2 admin-only admin-pencil">
+                  <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); editProduct('${doc.id}')">Editar</a></li>
+                    <li><a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); deleteProduct('${doc.id}')">Eliminar</a></li>
+                  </ul>
+                </div>
+                <img src="${img}" class="product-img" alt="${d.title}">
+                <div class="product-info">
+                  <h6 class="product-title">${d.title}</h6>
+                  <p class="product-desc">${descBreve}</p>
+                  <div class="d-flex justify-content-between align-items-center mt-auto">
+                    <span class="product-price">$${d.price?.toLocaleString() || '0'} MXN</span>
+                    <a href="product.html?id=${doc.id}" class="btn btn-warning btn-sm">Ver más</a>
+                  </div>
+                </div>
+              </div>
+            </div>`;
+        });
+      } catch (err) {
+        container.innerHTML = '<p class="text-center text-danger">Error al cargar productos.</p>';
+      }
+    }
+
+    // Cerrar sesión
+    document.getElementById('logoutLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => alert("Sesión cerrada")).catch((e) => alert("Error: " + e.message));
+    });
+
+    // Padding dinámico para navbar fixed
     function adjustBodyPadding() {
       const navbar = document.querySelector('.navbar-custom');
       if (navbar) {
