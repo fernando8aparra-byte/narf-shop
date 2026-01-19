@@ -37,6 +37,7 @@
       color: var(--text-light);
       letter-spacing: 1px;
       text-transform: lowercase;
+      white-space: nowrap;
     }
     .search-input {
       background-color: #222;
@@ -44,6 +45,10 @@
       color: var(--text-light);
       height: 45px;
       border-radius: 30px 0 0 30px;
+      font-size: 0.95rem;
+    }
+    .search-input::placeholder {
+      color: var(--text-muted);
     }
     .search-btn {
       background-color: var(--accent-gold);
@@ -55,14 +60,37 @@
     .nav-icon {
       color: var(--text-light);
       font-size: 1.5rem;
-      margin-left: 1rem;
       cursor: pointer;
     }
     .nav-icon:hover { color: var(--accent-gold); }
+
+    /* Nuevo: Barra de búsqueda más ancha y todo alineado */
+    .search-container {
+      flex-grow: 1;
+      max-width: 800px;
+      margin: 0 1.5rem;
+    }
+    .user-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 60px;
+    }
+    .user-name {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      margin-top: 4px;
+      white-space: nowrap;
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .hero {
       height: 80vh;
       min-height: 600px;
-      background: linear-gradient(var(--overlay), var(--overlay)), url('https://images.stockx.com/images/Alexander-McQueen-Oversized-Light-Gold-Product.jpg?fit=fill&bg=FFFFFF&w=1400&h=1000&fm=webp&auto=compress&q=90') center/cover no-repeat;
+      background: linear-gradient(var(--overlay), var(--overlay)),
+                  url('https://images.stockx.com/images/Alexander-McQueen-Oversized-Light-Gold-Product.jpg?fit=fill&bg=FFFFFF&w=1400&h=1000&fm=webp&auto=compress&q=90') center/cover no-repeat;
       display: flex;
       align-items: center;
       text-align: center;
@@ -89,9 +117,16 @@
     }
     .product-card:hover { transform: translateY(-10px); }
     .product-img { width: 100%; height: 240px; object-fit: cover; }
-    .section-title { position: relative; }
+    .section-title { position: relative; display: inline-block; }
+
+    @media (max-width: 992px) {
+      .search-container { margin: 1rem 0; max-width: none; }
+      .navbar-custom .container { flex-direction: column; }
+      .user-section { margin-top: 0.5rem; }
+    }
     @media (max-width: 768px) {
       .hero-title { font-size: 3rem; }
+      .hero-text { font-size: 1.2rem; }
     }
   </style>
 </head>
@@ -99,17 +134,26 @@
 
   <!-- Header -->
   <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
-    <div class="container d-flex justify-content-between align-items-center flex-wrap">
-      <a class="navbar-brand" href="#">narf shop.mx</a>
-      <div class="search-group mx-auto">
-        <div class="input-group" style="max-width: 600px;">
+    <div class="container d-flex align-items-center">
+      <a class="navbar-brand me-0" href="#">narf shop.mx</a>
+
+      <!-- Barra de búsqueda ancha -->
+      <div class="search-container">
+        <div class="input-group">
           <input type="text" class="form-control search-input" placeholder="Buscar sneakers premium...">
           <button class="btn search-btn"><i class="bi bi-search"></i></button>
         </div>
-        <div class="icons-right d-flex align-items-center">
-          <a class="nav-icon" data-bs-toggle="modal" data-bs-target="#authModal"><i class="bi bi-person"></i></a>
-          <a href="#" class="nav-icon"><i class="bi bi-cart3"></i></a>
+      </div>
+
+      <!-- Iconos derecho: usuario y carrito -->
+      <div class="d-flex align-items-center">
+        <div class="user-section me-3">
+          <a class="nav-icon" data-bs-toggle="modal" data-bs-target="#authModal" id="userIcon">
+            <i class="bi bi-person"></i>
+          </a>
+          <small class="user-name" id="userNameDisplay" style="display:none;"></small>
         </div>
+        <a href="#" class="nav-icon"><i class="bi bi-cart3"></i></a>
       </div>
     </div>
   </nav>
@@ -136,7 +180,7 @@
       <button class="btn btn-warning admin-only mb-4" onclick="addProduct()">+ Agregar Producto</button>
 
       <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 g-lg-5" id="productsContainer">
-        <!-- Productos se cargarán aquí dinámicamente -->
+        <!-- Productos se cargan dinámicamente -->
       </div>
     </div>
   </section>
@@ -168,7 +212,7 @@
 
           <div id="registerForm" style="display:none;">
             <div class="mb-3">
-              <label class="form-label">Nombre o Email</label>
+              <label class="form-label">Email</label>
               <input type="email" id="regEmail" class="form-control" required>
             </div>
             <div class="mb-3">
@@ -191,7 +235,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
     const firebaseConfig = {
@@ -211,18 +255,66 @@
     const storage = getStorage(app);
     const provider = new GoogleAuthProvider();
 
-    let currentUser = null;
     const admins = ["fernando8aparra@gmail.com", "luisatondo28@gmail.com"];
 
-    // Observar estado de autenticación
-    onAuthStateChanged(auth, (user) => {
-      currentUser = user;
+    // Productos demo originales
+    const demoProducts = [
+      { title: "McQueen Oversized Gold", price: 3800, image: "https://images.stockx.com/images/Alexander-McQueen-Oversized-Light-Gold-Product.jpg?fit=fill&bg=FFFFFF&w=700&h=500&fm=webp&auto=compress&q=90" },
+      { title: "Nike Air Force 1 White", price: 2900, image: "https://images.stockx.com/images/Nike-Air-Force-1-Low-White-07-Product.jpg?fit=fill&bg=FFFFFF&w=700&h=500&fm=webp&auto=compress&q=90" },
+      { title: "Balenciaga Triple S", price: 4200, image: "https://images.stockx.com/images/Balenciaga-Triple-S-Clear-Sole-Black-Product.jpg?fit=fill&bg=FFFFFF&w=700&h=500&fm=webp&auto=compress&q=90" },
+      { title: "Yeezy Boost 350", price: 3500, image: "https://images.stockx.com/images/Adidas-Yeezy-Boost-350-V2-Black-Red-Product.jpg?fit=fill&bg=FFFFFF&w=700&h=500&fm=webp&auto=compress&q=90" }
+    ];
+
+    onAuthStateChanged(auth, async (user) => {
       const isAdmin = user && admins.includes(user.email);
       document.querySelectorAll('.admin-only').forEach(el => {
         el.style.display = isAdmin ? 'block' : 'none';
       });
-      if (user) loadProducts();
+
+      if (user) {
+        // Mostrar nombre debajo del icono
+        const displayName = user.displayName || user.email.split('@')[0];
+        document.getElementById('userNameDisplay').textContent = displayName;
+        document.getElementById('userNameDisplay').style.display = 'block';
+      } else {
+        document.getElementById('userNameDisplay').style.display = 'none';
+      }
+
+      await loadProducts();
     });
+
+    async function loadProducts() {
+      const container = document.getElementById('productsContainer');
+      container.innerHTML = '<div class="text-center"><div class="spinner-border text-warning" role="status"></div></div>';
+
+      const snapshot = await getDocs(collection(db, "products"));
+      
+      if (snapshot.empty) {
+        // Cargar productos demo si no hay ninguno
+        for (const prod of demoProducts) {
+          await addDoc(collection(db, "products"), prod);
+        }
+        loadProducts(); // Recargar
+        return;
+      }
+
+      container.innerHTML = '';
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const card = `
+          <div class="col">
+            <div class="product-card">
+              <img src="${data.image}" alt="${data.title}" class="product-img">
+              <i class="bi bi-pencil edit-icon admin-only" onclick="editProduct('${docSnap.id}')"></i>
+              <div class="product-info">
+                <div class="product-title">${data.title}</div>
+                <div class="product-price">$${data.price.toLocaleString()} MXN</div>
+              </div>
+            </div>
+          </div>`;
+        container.innerHTML += card;
+      });
+    }
 
     window.login = async () => {
       const email = document.getElementById('loginEmail').value;
@@ -269,70 +361,44 @@
       document.getElementById('authModalTitle').textContent = "Iniciar Sesión";
     };
 
-    // Cargar productos
-    async function loadProducts() {
-      const container = document.getElementById('productsContainer');
-      container.innerHTML = '';
-      const querySnapshot = await getDocs(collection(db, "products"));
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const card = `
-          <div class="col">
-            <div class="product-card">
-              <img src="${data.image}" alt="${data.title}" class="product-img">
-              <i class="bi bi-pencil edit-icon admin-only" onclick="editProduct('${docSnap.id}')"></i>
-              <div class="product-info">
-                <div class="product-title">${data.title}</div>
-                <div class="product-price">$${data.price} MXN</div>
-              </div>
-            </div>
-          </div>`;
-        container.innerHTML += card;
-      });
-    }
-
-    // Editar Hero
     window.editHero = () => {
       const newBg = prompt("Pega la URL de la nueva imagen de fondo:");
       if (newBg) {
         document.getElementById('heroSection').style.backgroundImage = `linear-gradient(var(--overlay), var(--overlay)), url('${newBg}')`;
-        // Aquí podrías guardar en Firestore si quieres persistencia
       }
     };
 
-    // Editar título sección
     window.editSectionTitle = () => {
       const newTitle = prompt("Nuevo título de la sección:", document.getElementById('sectionTitle').textContent);
       if (newTitle) document.getElementById('sectionTitle').textContent = newTitle;
     };
 
-    // Agregar producto
     window.addProduct = async () => {
       const title = prompt("Título del producto:");
       const price = prompt("Precio (MXN):");
-      const imageFile = await selectImage();
-      if (!title || !price || !imageFile) return;
-
-      const storageRef = ref(storage, 'products/' + imageFile.name);
-      await uploadBytes(storageRef, imageFile);
-      const imageUrl = await getDownloadURL(storageRef);
-
+      if (!title || !price) return;
+      const file = await selectImage();
+      let imageUrl = demoProducts[0].image; // fallback
+      if (file) {
+        const storageRef = ref(storage, 'products/' + Date.now() + '_' + file.name);
+        await uploadBytes(storageRef, file);
+        imageUrl = await getDownloadURL(storageRef);
+      }
       await addDoc(collection(db, "products"), {
         title, price: Number(price), image: imageUrl
       });
       loadProducts();
     };
 
-    // Editar producto
     window.editProduct = async (id) => {
-      const newTitle = prompt("Nuevo título:");
-      const newPrice = prompt("Nuevo precio:");
+      const newTitle = prompt("Nuevo título (dejar vacío para no cambiar):");
+      const newPrice = prompt("Nuevo precio (dejar vacío para no cambiar):");
       let newImageUrl = null;
 
       if (confirm("¿Cambiar imagen?")) {
         const file = await selectImage();
         if (file) {
-          const storageRef = ref(storage, 'products/' + file.name);
+          const storageRef = ref(storage, 'products/' + Date.now() + '_' + file.name);
           await uploadBytes(storageRef, file);
           newImageUrl = await getDownloadURL(storageRef);
         }
@@ -350,23 +416,21 @@
       if (confirm("¿Borrar este producto?")) {
         await deleteDoc(doc(db, "products", id));
       }
-
       loadProducts();
     };
 
-    // Selector de imagen
     function selectImage() {
       return new Promise((resolve) => {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
-        input.onchange = (e) => resolve(e.target.files[0]);
+        input.onchange = (e) => resolve(e.target.files[0] || null);
         input.click();
       });
     }
 
-    // Cargar productos al inicio (si está logueado como admin)
-    if (currentUser && admins.includes(currentUser.email)) loadProducts();
+    // Cargar productos al cargar la página
+    loadProducts();
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
