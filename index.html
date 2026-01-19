@@ -1,758 +1,760 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NARF Shop - Sneakers Premium</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-dark: #0d0d0d;
-      --text-light: #f0f0f0;
-      --accent-gold: #d4af37;
-      --overlay: rgba(0,0,0,0.45);
-    }
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background-color: var(--bg-dark);
-      color: var(--text-light);
-    }
-    .navbar-custom {
-      background-color: rgba(13,13,13,0.95);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid #222;
-      padding: 0.6rem 0;
-    }
-    .navbar-brand {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--text-light);
-      text-transform: lowercase;
-    }
-    .search-input {
-      background-color: #222;
-      border: none;
-      color: var(--text-light);
-      border-radius: 30px 0 0 30px;
-      height: 40px;
-    }
-    .search-btn {
-      background-color: var(--accent-gold);
-      border-radius: 0 30px 30px 0;
-      width: 50px;
-      height: 40px;
-    }
-    .nav-icon {
-      color: var(--text-light);
-      font-size: 1.4rem;
-      cursor: pointer;
-    }
-    .nav-icon:hover { color: var(--accent-gold); }
-    .search-container {
-      flex-grow: 1;
-      max-width: 600px;
-      margin: 0 0.8rem;
-    }
-    .dropdown-menu {
-      background-color: #222;
-      border: 1px solid #444;
-      min-width: 180px;
-    }
-    .dropdown-item {
-      color: var(--text-light);
-    }
-    .dropdown-item:hover {
-      background-color: #333;
-      color: var(--accent-gold);
-    }
-    .user-name-dropdown {
-      color: var(--accent-gold);
-      font-weight: 600;
-      padding: 0.5rem 1rem;
-      pointer-events: none;
-    }
-    .hero {
-      height: 70vh;
-      min-height: 500px;
-      background: linear-gradient(var(--overlay), var(--overlay)),
-                  url('https://images.stockx.com/images/Alexander-McQueen-Oversized-Light-Gold-Product.jpg?fit=fill&bg=FFFFFF&w=1400&h=1000&fm=webp&auto=compress&q=90') center/cover no-repeat;
-      display: flex;
-      align-items: center;
-      text-align: center;
-      position: relative;
-    }
-    .hero-content {
-      width: 100%;
-    }
-    .hero-logo {
-      max-width: 130px;
-      max-height: 130px;
-      width: auto;
-      height: auto;
-      object-fit: contain;
-      background: white;
-      padding: 10px;
-      border: 5px solid white;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-      border-radius: 50%;
-    }
-    .admin-only { display: none; }
-    .product-card {
-      background: white;
-      color: black;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-      transition: transform 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      position: relative;
-    }
-    .product-card:hover { transform: translateY(-10px); }
-    .product-img {
-      width: 100%;
-      height: 250px;
-      object-fit: cover;
-      object-position: center;
-    }
-    .product-info {
-      padding: 14px;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .product-title { font-weight: 600; font-size: 1rem; margin-bottom: 6px; }
-    .product-desc {
-      font-size: 0.85rem;
-      color: #555;
-      margin-bottom: 10px;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .product-price {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #000;
-      text-decoration: underline;
-    }
-    .admin-pencil {
-      z-index: 10;
-    }
-    .admin-pencil .dropdown-toggle {
-      background: rgba(255,255,255,0.95);
-      border: none;
-      border-radius: 50%;
-      width: 38px;
-      height: 38px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.4);
-    }
-    .admin-pencil .dropdown-toggle i {
-      color: #333;
-      font-size: 1.2rem;
-    }
-    .admin-pencil .dropdown-toggle:hover {
-      background: var(--accent-gold);
-    }
-    .admin-pencil .dropdown-toggle:hover i {
-      color: white;
-    }
-    .preview-img {
-      width: 80px;
-      height: 80px;
-      object-fit: cover;
-      border-radius: 10px;
-      margin: 6px;
-      border: 3px solid var(--accent-gold);
-    }
-    .size-quantity-box {
-      background: white;
-      color: black;
-      border-radius: 12px;
-      padding: 14px;
-      margin-top: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-      display: none;
-    }
-    .quantity-group {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 8px;
-    }
-    .quantity-group input {
-      width: 100px;
-      text-align: center;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    .btn-listo {
-      background: #28a745;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 18px;
-      font-weight: 600;
-    }
-    .btn-listo.confirmed {
-      background: #1e7e34;
-    }
-    #coleccion {
-      background-color: #ffffff;
-      color: #000000;
-      padding-bottom: 60px;
-    }
-    #coleccion h2 {
-      color: #000000;
-    }
-    .auth-modal .nav-tabs {
-      border-bottom: 2px solid var(--accent-gold);
-    }
-    .auth-modal .nav-tabs .nav-link {
-      color: var(--text-light);
-      font-weight: 600;
-      border: none;
-      padding: 10px 25px;
-    }
-    .auth-modal .nav-tabs .nav-link.active {
-      color: var(--accent-gold);
-      background: transparent;
-      border-bottom: 3px solid var(--accent-gold);
-    }
-    .auth-modal .form-control {
-      background-color: #222;
-      border: 1px solid #444;
-      color: var(--text-light);
-    }
-    .auth-modal .form-control:focus {
-      border-color: var(--accent-gold);
-      box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
-    }
-    .auth-modal .input-group-text {
-      background-color: #222;
-      border: 1px solid #444;
-      color: var(--accent-gold);
-    }
-    /* Responsive */
-    @media (max-width: 992px) {
-      .hero { height: 65vh; }
-      .hero-logo { max-width: 110px; max-height: 110px; }
-    }
-    @media (max-width: 768px) {
-      .hero { height: 60vh; }
-      .hero-logo { max-width: 100px; max-height: 100px; padding: 8px; }
-      .product-img { height: 220px; }
-    }
-    @media (max-width: 576px) {
-      .hero { height: 55vh; min-height: 420px; }
-      .hero-logo { max-width: 90px; max-height: 90px; padding: 6px; }
-      .navbar-brand { font-size: 1.1rem; }
-      .search-container { margin: 0 0.5rem; max-width: none; }
-      .search-input, .search-btn { height: 38px; }
-      .nav-icon { font-size: 1.3rem; }
-      .product-img { height: 200px; }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>NARF Shop - Sneakers Premium</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0d0d0d;
+            --text-light: #f0f0f0;
+            --accent-gold: #d4af37;
+            --overlay: rgba(0,0,0,0.45);
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+        }
+        .navbar-custom {
+            background-color: rgba(13,13,13,0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #222;
+            padding: 0.6rem 0;
+        }
+        .navbar-brand {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: lowercase;
+        }
+        .search-input {
+            background-color: #222;
+            border: none;
+            color: var(--text-light);
+            border-radius: 30px 0 0 30px;
+            height: 40px;
+        }
+        .search-btn {
+            background-color: var(--accent-gold);
+            border-radius: 0 30px 30px 0;
+            width: 50px;
+            height: 40px;
+        }
+        .nav-icon {
+            color: var(--text-light);
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+        .nav-icon:hover { color: var(--accent-gold); }
+        .search-container {
+            flex-grow: 1;
+            max-width: 600px;
+            margin: 0 0.8rem;
+        }
+        .dropdown-menu {
+            background-color: #222;
+            border: 1px solid #444;
+            min-width: 180px;
+        }
+        .dropdown-item {
+            color: var(--text-light);
+        }
+        .dropdown-item:hover {
+            background-color: #333;
+            color: var(--accent-gold);
+        }
+        .user-name-dropdown {
+            color: var(--accent-gold);
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            pointer-events: none;
+        }
+        .hero {
+            height: 70vh;
+            min-height: 500px;
+            background: linear-gradient(var(--overlay), var(--overlay)),
+                        url('https://images.stockx.com/images/Alexander-McQueen-Oversized-Light-Gold-Product.jpg?fit=fill&bg=FFFFFF&w=1400&h=1000&fm=webp&auto=compress&q=90') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+        .hero-content {
+            width: 100%;
+        }
+        .hero-logo {
+            max-width: 130px;
+            max-height: 130px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            background: white;
+            padding: 10px;
+            border: 5px solid white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            border-radius: 50%;
+        }
+        .admin-only { display: none; }
+        .product-card {
+            background: white;
+            color: black;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+        }
+        .product-card:hover { transform: translateY(-10px); }
+        .product-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            object-position: center;
+        }
+        .product-info {
+            padding: 14px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .product-title { font-weight: 600; font-size: 1rem; margin-bottom: 6px; }
+        .product-desc {
+            font-size: 0.85rem;
+            color: #555;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .product-price {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #000;
+            text-decoration: underline;
+        }
+        .admin-pencil {
+            z-index: 10;
+        }
+        .admin-pencil .dropdown-toggle {
+            background: rgba(255,255,255,0.95);
+            border: none;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.4);
+        }
+        .admin-pencil .dropdown-toggle i {
+            color: #333;
+            font-size: 1.2rem;
+        }
+        .admin-pencil .dropdown-toggle:hover {
+            background: var(--accent-gold);
+        }
+        .admin-pencil .dropdown-toggle:hover i {
+            color: white;
+        }
+        .preview-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 6px;
+            border: 3px solid var(--accent-gold);
+        }
+        .size-quantity-box {
+            background: white;
+            color: black;
+            border-radius: 12px;
+            padding: 14px;
+            margin-top: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            display: none;
+        }
+        .quantity-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .quantity-group input {
+            width: 100px;
+            text-align: center;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+        .btn-listo {
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-weight: 600;
+        }
+        .btn-listo.confirmed {
+            background: #1e7e34;
+        }
+        #coleccion {
+            background-color: #ffffff;
+            color: #000000;
+            padding-bottom: 60px;
+        }
+        #coleccion h2 {
+            color: #000000;
+        }
+        .auth-modal .nav-tabs {
+            border-bottom: 2px solid var(--accent-gold);
+        }
+        .auth-modal .nav-tabs .nav-link {
+            color: var(--text-light);
+            font-weight: 600;
+            border: none;
+            padding: 10px 25px;
+        }
+        .auth-modal .nav-tabs .nav-link.active {
+            color: var(--accent-gold);
+            background: transparent;
+            border-bottom: 3px solid var(--accent-gold);
+        }
+        .auth-modal .form-control {
+            background-color: #222;
+            border: 1px solid #444;
+            color: var(--text-light);
+        }
+        .auth-modal .form-control:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+        }
+        .auth-modal .input-group-text {
+            background-color: #222;
+            border: 1px solid #444;
+            color: var(--accent-gold);
+        }
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero { height: 65vh; }
+            .hero-logo { max-width: 110px; max-height: 110px; }
+        }
+        @media (max-width: 768px) {
+            .hero { height: 60vh; }
+            .hero-logo { max-width: 100px; max-height: 100px; padding: 8px; }
+            .product-img { height: 220px; }
+        }
+        @media (max-width: 576px) {
+            .hero { height: 55vh; min-height: 420px; }
+            .hero-logo { max-width: 90px; max-height: 90px; padding: 6px; }
+            .navbar-brand { font-size: 1.1rem; }
+            .search-input, .search-btn { height: 38px; }
+            .nav-icon { font-size: 1.3rem; }
+            .product-img { height: 200px; }
+            .search-container { margin: 0 0.4rem; }
+            .navbar-brand { font-size: 1rem; }
+            .nav-icon { font-size: 1.2rem; margin-left: 0.5rem; }
+        }
+    </style>
 </head>
 <body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
-    <div class="container d-flex align-items-center">
-      <a class="navbar-brand me-0" href="#">narf shop.mx</a>
-      <div class="search-container">
-        <div class="input-group">
-          <input type="text" class="form-control search-input" placeholder="Buscar sneakers premium...">
-          <button class="btn search-btn"><i class="bi bi-search"></i></button>
-        </div>
-      </div>
-      <div class="d-flex align-items-center">
-        <div class="dropdown text-center me-3">
-          <a class="nav-icon" id="userDropdownToggle" href="#" role="button">
-            <i class="bi bi-person"></i>
-          </a>
-          <div id="mobileUserName" class="d-block d-lg-none text-light text-center mt-1" style="font-size: 0.8rem;"></div>
-          <ul class="dropdown-menu dropdown-menu-end" id="userDropdownMenu">
-            <li><div class="user-name-dropdown" id="userNameDisplay"></div></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" href="#" id="logoutLink">Cerrar sesión</a></li>
-          </ul>
-        </div>
-        <a href="#" class="nav-icon"><i class="bi bi-cart3"></i></a>
-      </div>
-    </div>
-  </nav>
-  <!-- Hero -->
-  <section class="hero" id="heroSection">
-    <div class="container hero-content">
-      <img id="heroLogo" class="hero-logo d-block mx-auto mb-4" alt="NARF Shop Logo">
-      <h1 class="display-4 fw-bold">Sneakers Premium</h1>
-      <p class="lead mt-3">Precios exclusivos en mayoreo • Calidad G5 • Envíos a todo México</p>
-      <a href="#coleccion" class="btn btn-warning btn-lg mt-4 d-block mx-auto">EXPLORAR COLECCIÓN</a>
-    </div>
-  </section>
-  <!-- Colección -->
-  <section id="coleccion" class="py-5">
-    <div class="container">
-      <h2 class="display-6 text-center mb-5">Colección Principal</h2>
-      <div class="text-center mb-4">
-        <button class="btn btn-warning btn-lg admin-only" data-bs-toggle="modal" data-bs-target="#addProductModal">
-          + Agregar Producto
-        </button>
-      </div>
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 g-lg-5" id="productsContainer">
-        <!-- Productos se cargan aquí -->
-      </div>
-    </div>
-  </section>
-  <!-- Modal Autenticación -->
-  <div class="modal fade auth-modal" id="authModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content bg-dark text-light overflow-hidden">
-        <div class="modal-header border-0 pb-0">
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body pt-0">
-          <ul class="nav nav-tabs justify-content-center mb-4" id="authTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button">Iniciar Sesión</button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button">Registrarse</button>
-            </li>
-          </ul>
-          <div class="tab-content">
-            <div class="tab-pane fade show active" id="login">
-              <form>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                  <input type="email" id="loginEmail" class="form-control" placeholder="Email" required>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container d-flex align-items-center flex-nowrap">
+            <a class="navbar-brand me-2" href="#">narf shop.mx</a>
+            <div class="search-container">
+                <div class="input-group">
+                    <input type="text" class="form-control search-input" placeholder="Buscar sneakers premium...">
+                    <button class="btn search-btn"><i class="bi bi-search"></i></button>
                 </div>
-                <div class="mb-4 input-group">
-                  <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                  <input type="password" id="loginPassword" class="form-control" placeholder="Contraseña" required>
+            </div>
+            <div class="d-flex align-items-center ms-2">
+                <div class="dropdown text-center me-3">
+                    <a class="nav-icon" id="userDropdownToggle" href="#" role="button">
+                        <i class="bi bi-person"></i>
+                    </a>
+                    <div id="mobileUserName" class="d-block d-lg-none text-light text-center mt-1" style="font-size: 0.8rem;"></div>
+                    <ul class="dropdown-menu dropdown-menu-end" id="userDropdownMenu">
+                        <li><div class="user-name-dropdown" id="userNameDisplay"></div></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#" id="logoutLink">Cerrar sesión</a></li>
+                    </ul>
                 </div>
-                <button type="button" class="btn btn-warning w-100 mb-3" onclick="login()">Iniciar Sesión</button>
-                <button type="button" class="btn btn-outline-light w-100" onclick="googleSignIn()">
-                  <i class="bi bi-google me-2"></i> Continuar con Google
+                <a href="#" class="nav-icon"><i class="bi bi-cart3"></i></a>
+            </div>
+        </div>
+    </nav>
+    <!-- Hero -->
+    <section class="hero" id="heroSection">
+        <div class="container hero-content">
+            <img id="heroLogo" class="hero-logo d-block mx-auto mb-4" alt="NARF Shop Logo">
+            <h1 class="display-4 fw-bold">Sneakers Premium</h1>
+            <p class="lead mt-3">Precios exclusivos en mayoreo • Calidad G5 • Envíos a todo México</p>
+            <a href="#coleccion" class="btn btn-warning btn-lg mt-4 d-block mx-auto">EXPLORAR COLECCIÓN</a>
+        </div>
+    </section>
+    <!-- Colección -->
+    <section id="coleccion" class="py-5">
+        <div class="container">
+            <h2 class="display-6 text-center mb-5">Colección Principal</h2>
+            <div class="text-center mb-4">
+                <button class="btn btn-warning btn-lg admin-only" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                    + Agregar Producto
                 </button>
-              </form>
             </div>
-            <div class="tab-pane fade" id="register">
-              <form>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                  <input type="email" id="regEmail" class="form-control" placeholder="Email" required>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                  <input type="password" id="regPassword" class="form-control" placeholder="Contraseña" required>
-                </div>
-                <div class="mb-4 input-group">
-                  <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                  <input type="password" id="regConfirm" class="form-control" placeholder="Confirmar contraseña" required>
-                </div>
-                <button type="button" class="btn btn-success w-100" onclick="register()">Registrarse</button>
-              </form>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 g-lg-5" id="productsContainer">
+                <!-- Productos se cargan aquí -->
             </div>
-          </div>
         </div>
-      </div>
+    </section>
+    <!-- Modal Autenticación -->
+    <div class="modal fade auth-modal" id="authModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-light overflow-hidden">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-0">
+                    <ul class="nav nav-tabs justify-content-center mb-4" id="authTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button">Iniciar Sesión</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button">Registrarse</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="login">
+                            <form>
+                                <div class="mb-3 input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" id="loginEmail" class="form-control" placeholder="Email" required>
+                                </div>
+                                <div class="mb-4 input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <input type="password" id="loginPassword" class="form-control" placeholder="Contraseña" required>
+                                </div>
+                                <button type="button" class="btn btn-warning w-100 mb-3" onclick="login()">Iniciar Sesión</button>
+                                <button type="button" class="btn btn-outline-light w-100" onclick="googleSignIn()">
+                                    <i class="bi bi-google me-2"></i> Continuar con Google
+                                </button>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="register">
+                            <form>
+                                <div class="mb-3 input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" id="regEmail" class="form-control" placeholder="Email" required>
+                                </div>
+                                <div class="mb-3 input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <input type="password" id="regPassword" class="form-control" placeholder="Contraseña" required>
+                                </div>
+                                <div class="mb-4 input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <input type="password" id="regConfirm" class="form-control" placeholder="Confirmar contraseña" required>
+                                </div>
+                                <button type="button" class="btn btn-success w-100" onclick="register()">Registrarse</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  <!-- Modal Agregar/Editar Producto -->
-  <div class="modal fade" id="addProductModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content bg-dark text-light">
-        <div class="modal-header border-secondary">
-          <h5 class="modal-title">Agregar Nuevo Producto</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <!-- Modal Agregar/Editar Producto -->
+    <div class="modal fade" id="addProductModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title">Agregar Nuevo Producto</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addProductForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label>Título del producto</label>
+                                <input type="text" id="prodTitle" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Tipo de producto</label>
+                                <input type="text" id="prodType" class="form-control" placeholder="Ej: Sneakers, Botas" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Descripción</label>
+                            <textarea id="prodDescription" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label>Precio (MXN)</label>
+                            <input type="number" id="prodPrice" class="form-control" min="0" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Tallas disponibles y cantidad</label>
+                            <div id="sizesContainer" class="row g-3"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Imágenes del producto (múltiples)</label>
+                            <input type="file" id="prodImages" class="form-control" accept="image/*" multiple>
+                            <div id="imagePreview" class="mt-3 d-flex flex-wrap justify-content-center"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-warning" onclick="saveProduct()">Guardar Producto</button>
+                </div>
+            </div>
         </div>
-        <div class="modal-body">
-          <form id="addProductForm">
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label>Título del producto</label>
-                <input type="text" id="prodTitle" class="form-control" required>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label>Tipo de producto</label>
-                <input type="text" id="prodType" class="form-control" placeholder="Ej: Sneakers, Botas" required>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label>Descripción</label>
-              <textarea id="prodDescription" class="form-control" rows="3" required></textarea>
-            </div>
-            <div class="mb-3">
-              <label>Precio (MXN)</label>
-              <input type="number" id="prodPrice" class="form-control" min="0" required>
-            </div>
-            <div class="mb-4">
-              <label class="form-label">Tallas disponibles y cantidad</label>
-              <div id="sizesContainer" class="row g-3"></div>
-            </div>
-            <div class="mb-3">
-              <label>Imágenes del producto (múltiples)</label>
-              <input type="file" id="prodImages" class="form-control" accept="image/*" multiple>
-              <div id="imagePreview" class="mt-3 d-flex flex-wrap justify-content-center"></div>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer border-secondary">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-warning" onclick="saveProduct()">Guardar Producto</button>
-        </div>
-      </div>
     </div>
-  </div>
-  <!-- Firebase + Lógica -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL, listAll, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
-    const firebaseConfig = {
-      apiKey: "AIzaSyAt8TuulnlY3IKPaFVctgaGNQWewfzONEI",
-      authDomain: "comprobantes-363c9.firebaseapp.com",
-      projectId: "comprobantes-363c9",
-      storageBucket: "comprobantes-363c9.firebasestorage.app",
-      messagingSenderId: "390391998056",
-      appId: "1:390391998056:web:23e22073d88bc247d43ddd"
-    };
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
-    const provider = new GoogleAuthProvider();
-    const admins = ["fernando8aparra@gmail.com", "luisatondo28@gmail.com"];
-    let editMode = false;
-    let currentProductId = null;
-    async function loadLogo() {
-      try {
-        const logoRef = ref(storage, 'logo/narf shop logo.jpg');
-        const url = await getDownloadURL(logoRef);
-        document.getElementById('heroLogo').src = url;
-      } catch (err) {
-        console.error('Error cargando logo:', err);
-        document.getElementById('heroLogo').style.display = 'none';
-      }
-    }
-    // Generar tallas dinámicamente
-    function populateSizes() {
-      const container = document.getElementById('sizesContainer');
-      if (container.children.length > 0) return;
-      for (let s = 23; s <= 30; s++) {
-        const html = `
-          <div class="col-3">
-            <div class="form-check">
-              <input class="form-check-input size-checkbox" type="checkbox" value="${s}" id="size${s}">
-              <label class="form-check-label text-light" for="size${s}">Talla ${s}</label>
-            </div>
-            <div class="size-quantity-box" id="quantity${s}">
-              <small>Cantidad para talla ${s}</small>
-              <div class="quantity-group">
-                <input type="number" class="form-control" id="qty${s}" min="0" value="0">
-                <button type="button" class="btn btn-listo" onclick="confirmQuantity(${s})">Listo</button>
-              </div>
-            </div>
-          </div>`;
-        container.innerHTML += html;
-      }
-      document.querySelectorAll('.size-checkbox').forEach(cb => {
-        cb.addEventListener('change', function() {
-          const size = this.value;
-          const box = document.getElementById('quantity' + size);
-          const qtyInput = document.getElementById('qty' + size);
-          const btn = box.querySelector('.btn-listo');
-          if (this.checked) {
-            box.style.display = 'block';
-          } else {
-            box.style.display = 'none';
-            qtyInput.value = 0;
-            btn.classList.remove('confirmed');
-            btn.textContent = 'Listo';
-          }
-        });
-      });
-    }
-    onAuthStateChanged(auth, async (user) => {
-      const isAdmin = user && admins.includes(user.email);
-      const toggle = document.getElementById('userDropdownToggle');
-      const menu = document.getElementById('userDropdownMenu');
-      const nameDisplay = document.getElementById('userNameDisplay');
-      const mobileName = document.getElementById('mobileUserName');
-      if (user) {
-        let name = user.displayName || user.email.split('@')[0];
-        name = name.charAt(0).toUpperCase() + name.slice(1);
-        const shortName = name.length > 12 ? name.substring(0, 10) + '...' : name;
-        nameDisplay.textContent = shortName;
-        mobileName.textContent = shortName;
-        toggle.classList.add('dropdown-toggle');
-        toggle.setAttribute('data-bs-toggle', 'dropdown');
-        toggle.removeAttribute('data-bs-target');
-        menu.style.display = 'block';
-      } else {
-        nameDisplay.textContent = '';
-        mobileName.textContent = '';
-        toggle.classList.remove('dropdown-toggle');
-        toggle.removeAttribute('data-bs-toggle');
-        toggle.setAttribute('data-bs-toggle', 'modal');
-        toggle.setAttribute('data-bs-target', '#authModal');
-        menu.style.display = 'none';
-      }
-      document.querySelectorAll('.admin-only').forEach(el => {
-        el.style.display = isAdmin ? 'block' : 'none';
-      });
-      await loadProducts();
-    });
-    window.login = async () => {
-      const email = document.getElementById('loginEmail').value.trim();
-      const pass = document.getElementById('loginPassword').value;
-      if (!email || !pass) return alert("Completa todos los campos");
-      try {
-        await signInWithEmailAndPassword(auth, email, pass);
-        bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();
-      } catch (e) { alert("Error: " + e.message); }
-    };
-    window.googleSignIn = async () => {
-      try {
-        await signInWithPopup(auth, provider);
-        bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();
-      } catch (e) { alert("Error Google: " + e.message); }
-    };
-    window.register = async () => {
-      const email = document.getElementById('regEmail').value.trim();
-      const pass = document.getElementById('regPassword').value;
-      const confirm = document.getElementById('regConfirm').value;
-      if (!email || !pass || !confirm) return alert("Completa todos los campos");
-      if (pass !== confirm) return alert("Las contraseñas no coinciden");
-      try {
-        await createUserWithEmailAndPassword(auth, email, pass);
-        bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();
-      } catch (e) { alert("Error: " + e.message); }
-    };
-    window.confirmQuantity = (size) => {
-      const input = document.getElementById('qty' + size);
-      const btn = input.closest('.size-quantity-box').querySelector('.btn-listo');
-      const val = parseInt(input.value);
-      if (isNaN(val) || val < 0) {
-        input.value = 0;
-        alert("Cantidad inválida");
-        return;
-      }
-      btn.classList.add('confirmed');
-      btn.textContent = '¡Confirmado!';
-    };
-    document.getElementById('prodImages').addEventListener('change', (e) => {
-      const preview = document.getElementById('imagePreview');
-      preview.innerHTML = '';
-      for (let file of e.target.files) {
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-          const img = document.createElement('img');
-          img.src = ev.target.result;
-          img.className = 'preview-img';
-          preview.appendChild(img);
+    <!-- Firebase + Lógica -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL, listAll, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyAt8TuulnlY3IKPaFVctgaGNQWewfzONEI",
+            authDomain: "comprobantes-363c9.firebaseapp.com",
+            projectId: "comprobantes-363c9",
+            storageBucket: "comprobantes-363c9.firebasestorage.app",
+            messagingSenderId: "390391998056",
+            appId: "1:390391998056:web:23e22073d88bc247d43ddd"
         };
-        reader.readAsDataURL(file);
-      }
-    });
-    window.editProduct = async (productId) => {
-      try {
-        const docSnap = await getDoc(doc(db, "products", productId));
-        if (!docSnap.exists()) return alert("Producto no encontrado");
-        const data = docSnap.data();
-        document.getElementById('prodTitle').value = data.title || '';
-        document.getElementById('prodType').value = data.type || '';
-        document.getElementById('prodDescription').value = data.description || '';
-        document.getElementById('prodPrice').value = data.price || '';
-        document.querySelectorAll('.size-checkbox').forEach(cb => {
-          const s = cb.value;
-          const qtyInput = document.getElementById('qty' + s);
-          const box = document.getElementById('quantity' + s);
-          const btn = box.querySelector('.btn-listo');
-          if (data.stock && data.stock[s] > 0) {
-            cb.checked = true;
-            qtyInput.value = data.stock[s];
-            box.style.display = 'block';
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        const provider = new GoogleAuthProvider();
+        const admins = ["fernando8aparra@gmail.com", "luisatondo28@gmail.com"];
+        let editMode = false;
+        let currentProductId = null;
+        async function loadLogo() {
+            try {
+                const logoRef = ref(storage, 'logo/narf shop logo.jpg');
+                const url = await getDownloadURL(logoRef);
+                document.getElementById('heroLogo').src = url;
+            } catch (err) {
+                console.error('Error cargando logo:', err);
+                document.getElementById('heroLogo').style.display = 'none';
+            }
+        }
+        // Generar tallas dinámicamente
+        function populateSizes() {
+            const container = document.getElementById('sizesContainer');
+            if (container.children.length > 0) return;
+            for (let s = 23; s <= 30; s++) {
+                const html = `
+                    <div class="col-3">
+                        <div class="form-check">
+                            <input class="form-check-input size-checkbox" type="checkbox" value="${s}" id="size${s}">
+                            <label class="form-check-label text-light" for="size${s}">Talla ${s}</label>
+                        </div>
+                        <div class="size-quantity-box" id="quantity${s}">
+                            <small>Cantidad para talla ${s}</small>
+                            <div class="quantity-group">
+                                <input type="number" class="form-control" id="qty${s}" min="0" value="0">
+                                <button type="button" class="btn btn-listo" onclick="confirmQuantity(${s})">Listo</button>
+                            </div>
+                        </div>
+                    </div>`;
+                container.innerHTML += html;
+            }
+            document.querySelectorAll('.size-checkbox').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const size = this.value;
+                    const box = document.getElementById('quantity' + size);
+                    const qtyInput = document.getElementById('qty' + size);
+                    const btn = box.querySelector('.btn-listo');
+                    if (this.checked) {
+                        box.style.display = 'block';
+                    } else {
+                        box.style.display = 'none';
+                        qtyInput.value = 0;
+                        btn.classList.remove('confirmed');
+                        btn.textContent = 'Listo';
+                    }
+                });
+            });
+        }
+        onAuthStateChanged(auth, async (user) => {
+            const isAdmin = user && admins.includes(user.email);
+            const toggle = document.getElementById('userDropdownToggle');
+            const menu = document.getElementById('userDropdownMenu');
+            const nameDisplay = document.getElementById('userNameDisplay');
+            const mobileName = document.getElementById('mobileUserName');
+            if (user) {
+                let name = user.displayName || user.email.split('@')[0];
+                name = name.charAt(0).toUpperCase() + name.slice(1);
+                const shortName = name.length > 12 ? name.substring(0, 10) + '...' : name;
+                nameDisplay.textContent = shortName;
+                mobileName.textContent = shortName;
+                toggle.classList.add('dropdown-toggle');
+                toggle.setAttribute('data-bs-toggle', 'dropdown');
+                toggle.removeAttribute('data-bs-target');
+                menu.style.display = 'block';
+            } else {
+                nameDisplay.textContent = '';
+                mobileName.textContent = '';
+                toggle.classList.remove('dropdown-toggle');
+                toggle.removeAttribute('data-bs-toggle');
+                toggle.setAttribute('data-bs-toggle', 'modal');
+                toggle.setAttribute('data-bs-target', '#authModal');
+                menu.style.display = 'none';
+            }
+            document.querySelectorAll('.admin-only').forEach(el => {
+                el.style.display = isAdmin ? 'block' : 'none';
+            });
+            await loadProducts();
+        });
+        window.login = async () => {
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPassword').value;
+            if (!email || !pass) return alert("Completa todos los campos");
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+                bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();
+            } catch (e) { alert("Error: " + e.message); }
+        };
+        window.googleSignIn = async () => {
+            try {
+                await signInWithPopup(auth, provider);
+                bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();
+            } catch (e) { alert("Error Google: " + e.message); }
+        };
+        window.register = async () => {
+            const email = document.getElementById('regEmail').value.trim();
+            const pass = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirm').value;
+            if (!email || !pass || !confirm) return alert("Completa todos los campos");
+            if (pass !== confirm) return alert("Las contraseñas no coinciden");
+            try {
+                await createUserWithEmailAndPassword(auth, email, pass);
+                bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();
+            } catch (e) { alert("Error: " + e.message); }
+        };
+        window.confirmQuantity = (size) => {
+            const input = document.getElementById('qty' + size);
+            const btn = input.closest('.size-quantity-box').querySelector('.btn-listo');
+            const val = parseInt(input.value);
+            if (isNaN(val) || val < 0) {
+                input.value = 0;
+                alert("Cantidad inválida");
+                return;
+            }
             btn.classList.add('confirmed');
             btn.textContent = '¡Confirmado!';
-          } else {
-            cb.checked = false;
-            qtyInput.value = 0;
-            box.style.display = 'none';
-            btn.classList.remove('confirmed');
-            btn.textContent = 'Listo';
-          }
+        };
+        document.getElementById('prodImages').addEventListener('change', (e) => {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            for (let file of e.target.files) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = document.createElement('img');
+                    img.src = ev.target.result;
+                    img.className = 'preview-img';
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
         });
-        const preview = document.getElementById('imagePreview');
-        preview.innerHTML = '';
-        if (data.images && data.images.length > 0) {
-          data.images.forEach(url => {
-            const img = document.createElement('img');
-            img.src = url;
-            img.className = 'preview-img';
-            preview.appendChild(img);
-          });
+        window.editProduct = async (productId) => {
+            try {
+                const docSnap = await getDoc(doc(db, "products", productId));
+                if (!docSnap.exists()) return alert("Producto no encontrado");
+                const data = docSnap.data();
+                document.getElementById('prodTitle').value = data.title || '';
+                document.getElementById('prodType').value = data.type || '';
+                document.getElementById('prodDescription').value = data.description || '';
+                document.getElementById('prodPrice').value = data.price || '';
+                document.querySelectorAll('.size-checkbox').forEach(cb => {
+                    const s = cb.value;
+                    const qtyInput = document.getElementById('qty' + s);
+                    const box = document.getElementById('quantity' + s);
+                    const btn = box.querySelector('.btn-listo');
+                    if (data.stock && data.stock[s] > 0) {
+                        cb.checked = true;
+                        qtyInput.value = data.stock[s];
+                        box.style.display = 'block';
+                        btn.classList.add('confirmed');
+                        btn.textContent = '¡Confirmado!';
+                    } else {
+                        cb.checked = false;
+                        qtyInput.value = 0;
+                        box.style.display = 'none';
+                        btn.classList.remove('confirmed');
+                        btn.textContent = 'Listo';
+                    }
+                });
+                const preview = document.getElementById('imagePreview');
+                preview.innerHTML = '';
+                if (data.images && data.images.length > 0) {
+                    data.images.forEach(url => {
+                        const img = document.createElement('img');
+                        img.src = url;
+                        img.className = 'preview-img';
+                        preview.appendChild(img);
+                    });
+                }
+                document.querySelector('#addProductModal .modal-title').textContent = 'Editar Producto';
+                editMode = true;
+                currentProductId = productId;
+                const modal = new bootstrap.Modal(document.getElementById('addProductModal'));
+                modal.show();
+            } catch (err) {
+                console.error(err);
+                alert("Error al cargar producto");
+            }
+        };
+        window.deleteProduct = async (productId) => {
+            if (!confirm("¿Eliminar este producto? No se puede deshacer.")) return;
+            try {
+                await deleteDoc(doc(db, "products", productId));
+                const folderRef = ref(storage, `narf-shop/${productId}`);
+                const listResult = await listAll(folderRef);
+                for (const itemRef of listResult.items) {
+                    await deleteObject(itemRef);
+                }
+                await loadProducts();
+                alert("Producto eliminado");
+            } catch (err) {
+                alert("Error al eliminar: " + err.message);
+            }
+        };
+        window.saveProduct = async () => {
+            const title = document.getElementById('prodTitle').value.trim();
+            const type = document.getElementById('prodType').value.trim();
+            const description = document.getElementById('prodDescription').value.trim();
+            const price = Number(document.getElementById('prodPrice').value);
+            const files = document.getElementById('prodImages').files;
+            if (!title || !type || !description || isNaN(price) || price < 0) {
+                return alert("Completa todos los campos obligatorios correctamente.");
+            }
+            const stock = {};
+            let hasStock = false;
+            for (let s = 23; s <= 30; s++) {
+                if (document.getElementById('size' + s).checked) {
+                    const qty = parseInt(document.getElementById('qty' + s).value) || 0;
+                    if (qty > 0) {
+                        stock[s] = qty;
+                        hasStock = true;
+                    }
+                }
+            }
+            if (!hasStock) return alert("Indica al menos una talla con cantidad > 0.");
+            if (!editMode && files.length === 0) return alert("Selecciona al menos una imagen.");
+            try {
+                let productId = currentProductId;
+                let existingImages = [];
+                if (editMode) {
+                    const snap = await getDoc(doc(db, "products", currentProductId));
+                    existingImages = snap.data()?.images || [];
+                    await updateDoc(doc(db, "products", currentProductId), { title, type, description, price, stock });
+                } else {
+                    const docRef = await addDoc(collection(db, "products"), { title, type, description, price, stock, images: [] });
+                    productId = docRef.id;
+                }
+                const newUrls = [];
+                if (files.length > 0) {
+                    for (let file of files) {
+                        const storageRef = ref(storage, `narf-shop/${productId}/${Date.now()}_${file.name}`);
+                        await uploadBytes(storageRef, file);
+                        const url = await getDownloadURL(storageRef);
+                        newUrls.push(url);
+                    }
+                }
+                const finalImages = editMode ? [...existingImages, ...newUrls] : newUrls;
+                await updateDoc(doc(db, "products", productId), { images: finalImages });
+                bootstrap.Modal.getInstance(document.getElementById('addProductModal')).hide();
+                document.getElementById('addProductForm').reset();
+                document.getElementById('imagePreview').innerHTML = '';
+                document.querySelectorAll('.size-quantity-box').forEach(b => b.style.display = 'none');
+                document.querySelectorAll('.btn-listo').forEach(b => {
+                    b.classList.remove('confirmed');
+                    b.textContent = 'Listo';
+                });
+                document.querySelectorAll('.size-checkbox').forEach(cb => cb.checked = false);
+                document.querySelector('#addProductModal .modal-title').textContent = 'Agregar Nuevo Producto';
+                editMode = false;
+                currentProductId = null;
+                await loadProducts();
+                alert(editMode ? "Producto actualizado" : "Producto agregado");
+            } catch (err) {
+                console.error(err);
+                alert("Error al guardar: " + err.message);
+            }
+        };
+        async function loadProducts() {
+            const container = document.getElementById('productsContainer');
+            container.innerHTML = '<div class="text-center my-5"><div class="spinner-border text-warning" role="status"></div></div>';
+            try {
+                const snapshot = await getDocs(collection(db, "products"));
+                container.innerHTML = '';
+                if (snapshot.empty) {
+                    container.innerHTML = '<p class="text-center text-muted col-12">No hay productos aún.</p>';
+                    return;
+                }
+                snapshot.forEach(doc => {
+                    const d = doc.data();
+                    const img = d.images && d.images.length > 0 ? d.images[0] : 'https://via.placeholder.com/300x270?text=Sin+Imagen';
+                    const descBreve = d.description ? d.description.substring(0, 120) + (d.description.length > 120 ? '...' : '') : 'Sin descripción';
+                    container.innerHTML += `
+                        <div class="col">
+                            <div class="product-card">
+                                <div class="position-absolute top-0 end-0 p-2 admin-only admin-pencil">
+                                    <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); editProduct('${doc.id}')">Editar</a></li>
+                                        <li><a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); deleteProduct('${doc.id}')">Eliminar</a></li>
+                                    </ul>
+                                </div>
+                                <img src="${img}" class="product-img" alt="${d.title}">
+                                <div class="product-info">
+                                    <h6 class="product-title">${d.title}</h6>
+                                    <p class="product-desc">${descBreve}</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                                        <span class="product-price">$${d.price?.toLocaleString() || '0'} MXN</span>
+                                        <a href="product.html?id=${doc.id}" class="btn btn-warning btn-sm">Ver más</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+            } catch (err) {
+                container.innerHTML = '<p class="text-center text-danger">Error al cargar productos.</p>';
+            }
         }
-        document.querySelector('#addProductModal .modal-title').textContent = 'Editar Producto';
-        editMode = true;
-        currentProductId = productId;
-        const modal = new bootstrap.Modal(document.getElementById('addProductModal'));
-        modal.show();
-      } catch (err) {
-        console.error(err);
-        alert("Error al cargar producto");
-      }
-    };
-    window.deleteProduct = async (productId) => {
-      if (!confirm("¿Eliminar este producto? No se puede deshacer.")) return;
-      try {
-        await deleteDoc(doc(db, "products", productId));
-        const folderRef = ref(storage, `narf-shop/${productId}`);
-        const listResult = await listAll(folderRef);
-        for (const itemRef of listResult.items) {
-          await deleteObject(itemRef);
-        }
-        await loadProducts();
-        alert("Producto eliminado");
-      } catch (err) {
-        alert("Error al eliminar: " + err.message);
-      }
-    };
-    window.saveProduct = async () => {
-      const title = document.getElementById('prodTitle').value.trim();
-      const type = document.getElementById('prodType').value.trim();
-      const description = document.getElementById('prodDescription').value.trim();
-      const price = Number(document.getElementById('prodPrice').value);
-      const files = document.getElementById('prodImages').files;
-      if (!title || !type || !description || isNaN(price) || price < 0) {
-        return alert("Completa todos los campos obligatorios correctamente.");
-      }
-      const stock = {};
-      let hasStock = false;
-      for (let s = 23; s <= 30; s++) {
-        if (document.getElementById('size' + s).checked) {
-          const qty = parseInt(document.getElementById('qty' + s).value) || 0;
-          if (qty > 0) {
-            stock[s] = qty;
-            hasStock = true;
-          }
-        }
-      }
-      if (!hasStock) return alert("Indica al menos una talla con cantidad > 0.");
-      if (!editMode && files.length === 0) return alert("Selecciona al menos una imagen.");
-      try {
-        let productId = currentProductId;
-        let existingImages = [];
-        if (editMode) {
-          const snap = await getDoc(doc(db, "products", currentProductId));
-          existingImages = snap.data()?.images || [];
-          await updateDoc(doc(db, "products", currentProductId), { title, type, description, price, stock });
-        } else {
-          const docRef = await addDoc(collection(db, "products"), { title, type, description, price, stock, images: [] });
-          productId = docRef.id;
-        }
-        const newUrls = [];
-        if (files.length > 0) {
-          for (let file of files) {
-            const storageRef = ref(storage, `narf-shop/${productId}/${Date.now()}_${file.name}`);
-            await uploadBytes(storageRef, file);
-            const url = await getDownloadURL(storageRef);
-            newUrls.push(url);
-          }
-        }
-        const finalImages = editMode ? [...existingImages, ...newUrls] : newUrls;
-        await updateDoc(doc(db, "products", productId), { images: finalImages });
-        bootstrap.Modal.getInstance(document.getElementById('addProductModal')).hide();
-        document.getElementById('addProductForm').reset();
-        document.getElementById('imagePreview').innerHTML = '';
-        document.querySelectorAll('.size-quantity-box').forEach(b => b.style.display = 'none');
-        document.querySelectorAll('.btn-listo').forEach(b => {
-          b.classList.remove('confirmed');
-          b.textContent = 'Listo';
+        // Cerrar sesión
+        document.getElementById('logoutLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            signOut(auth).then(() => alert("Sesión cerrada")).catch((e) => alert("Error: " + e.message));
         });
-        document.querySelectorAll('.size-checkbox').forEach(cb => cb.checked = false);
-        document.querySelector('#addProductModal .modal-title').textContent = 'Agregar Nuevo Producto';
-        editMode = false;
-        currentProductId = null;
-        await loadProducts();
-        alert(editMode ? "Producto actualizado" : "Producto agregado");
-      } catch (err) {
-        console.error(err);
-        alert("Error al guardar: " + err.message);
-      }
-    };
-    async function loadProducts() {
-      const container = document.getElementById('productsContainer');
-      container.innerHTML = '<div class="text-center my-5"><div class="spinner-border text-warning" role="status"></div></div>';
-      try {
-        const snapshot = await getDocs(collection(db, "products"));
-        container.innerHTML = '';
-        if (snapshot.empty) {
-          container.innerHTML = '<p class="text-center text-muted col-12">No hay productos aún.</p>';
-          return;
+        // Padding dinámico para navbar fixed
+        function adjustBodyPadding() {
+            const navbar = document.querySelector('.navbar-custom');
+            if (navbar) {
+                document.body.style.paddingTop = (navbar.offsetHeight + 10) + 'px';
+            }
         }
-        snapshot.forEach(doc => {
-          const d = doc.data();
-          const img = d.images && d.images.length > 0 ? d.images[0] : 'https://via.placeholder.com/300x270?text=Sin+Imagen';
-          const descBreve = d.description ? d.description.substring(0, 120) + (d.description.length > 120 ? '...' : '') : 'Sin descripción';
-          container.innerHTML += `
-            <div class="col">
-              <div class="product-card">
-                <div class="position-absolute top-0 end-0 p-2 admin-only admin-pencil">
-                  <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                    <i class="bi bi-pencil"></i>
-                  </button>
-                  <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); editProduct('${doc.id}')">Editar</a></li>
-                    <li><a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); deleteProduct('${doc.id}')">Eliminar</a></li>
-                  </ul>
-                </div>
-                <img src="${img}" class="product-img" alt="${d.title}">
-                <div class="product-info">
-                  <h6 class="product-title">${d.title}</h6>
-                  <p class="product-desc">${descBreve}</p>
-                  <div class="d-flex justify-content-between align-items-center mt-auto">
-                    <span class="product-price">$${d.price?.toLocaleString() || '0'} MXN</span>
-                    <a href="product.html?id=${doc.id}" class="btn btn-warning btn-sm">Ver más</a>
-                  </div>
-                </div>
-              </div>
-            </div>`;
-        });
-      } catch (err) {
-        container.innerHTML = '<p class="text-center text-danger">Error al cargar productos.</p>';
-      }
-    }
-    // Cerrar sesión
-    document.getElementById('logoutLink').addEventListener('click', (e) => {
-      e.preventDefault();
-      signOut(auth).then(() => alert("Sesión cerrada")).catch((e) => alert("Error: " + e.message));
-    });
-    // Padding dinámico para navbar fixed
-    function adjustBodyPadding() {
-      const navbar = document.querySelector('.navbar-custom');
-      if (navbar) {
-        document.body.style.paddingTop = (navbar.offsetHeight + 10) + 'px';
-      }
-    }
-    window.addEventListener('load', adjustBodyPadding);
-    window.addEventListener('resize', adjustBodyPadding);
-    // Inicialización
-    populateSizes();
-    loadLogo();
-    loadProducts();
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        window.addEventListener('load', adjustBodyPadding);
+        window.addEventListener('resize', adjustBodyPadding);
+        // Inicialización
+        populateSizes();
+        loadLogo();
+        loadProducts();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
