@@ -193,7 +193,9 @@
     <section id="adminSection" class="py-5">
         <div class="container px-4 px-lg-5">
             <h2 class="display-6 text-center mb-5 text-light">Panel de Administración</h2>
-            <div class="text-center mb-5 d-flex justify-content-center gap-3 flex-wrap admin-only">
+            
+            <!-- Botones de acción (siempre visibles para admins) -->
+            <div class="text-center mb-5 d-flex justify-content-center gap-3 flex-wrap">
                 <button class="btn btn-warning btn-lg" data-bs-toggle="modal" data-bs-target="#addProductModal">
                     + Agregar Producto
                 </button>
@@ -411,10 +413,7 @@
                 modal.show();
             }
 
-            document.querySelectorAll('.admin-only').forEach(el => {
-                el.style.display = isAdmin ? 'block' : 'none';
-            });
-
+            // Los botones de agregar y eliminar múltiples ahora están siempre visibles para admins (quitamos admin-only del contenedor)
             if (isAdmin) {
                 await loadProducts();
             } else if (user) {
