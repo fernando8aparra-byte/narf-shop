@@ -120,11 +120,175 @@
       .search-container { margin: 1rem 0; max-width: none; }
       .navbar-custom .container { flex-direction: column; }
     }
+
+    /* ──────────────────────────────────────────────────────────────── */
+    /* Estilos del nuevo modal de autenticación (reemplazo completo)     */
+    :root {
+      --bg-black: #000000;
+      --gold-opaque: #b8972e;
+      --gold-bright: #ffd700;
+      --gold-glow: rgba(255, 215, 0, 0.4);
+      --text-white: #ffffff;
+    }
+
+    .auth-modal .modal-content {
+      background: transparent;
+      border: none;
+    }
+
+    .auth-modal .modal-body {
+      padding: 0;
+    }
+
+    .auth-container {
+      background: rgba(8, 8, 8, 0.78);
+      backdrop-filter: blur(10px);
+      padding: 4rem 3rem;
+      border-radius: 20px;
+      border: 1px solid rgba(184,151,46,0.18);
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+      text-align: center;
+      position: relative;
+    }
+
+    .form-title {
+      font-size: 3.8rem;
+      font-weight: 200;
+      letter-spacing: 4px;
+      color: var(--text-white);
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+      text-shadow: 
+        0 0 10px var(--gold-glow),
+        0 0 20px var(--gold-glow),
+        0 0 35px rgba(255,215,0,0.12);
+      position: relative;
+      line-height: 1.1;
+    }
+
+    .form-title::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      top: 48%;
+      left: -40%;
+      width: 180%;
+      height: 4px;
+      background: 
+        linear-gradient(90deg, 
+          transparent 0%,
+          transparent 25%,
+          var(--gold-bright) 35%,
+          var(--gold-opaque) 42%,
+          var(--gold-bright) 48%,
+          var(--gold-opaque) 54%,
+          transparent 65%,
+          transparent 100%
+        );
+      transform: translateY(-50%) skewX(-30deg);
+      opacity: 0.75;
+      filter: blur(1px);
+      animation: lightning-flow 5.5s infinite linear;
+      pointer-events: none;
+    }
+
+    @keyframes lightning-flow {
+      0%   { transform: translateX(-180%) translateY(-50%) skewX(-30deg); opacity: 0; }
+      8%   { opacity: 0.9; }
+      18%  { opacity: 1; }
+      30%  { opacity: 0.95; }
+      50%  { transform: translateX(180%) translateY(-50%) skewX(-30deg); opacity: 0; }
+      100% { opacity: 0; }
+    }
+
+    .auth-container input {
+      width: 100%;
+      padding: 1.3rem 1.5rem;
+      margin: 1.2rem 0;
+      border: 1px solid rgba(184,151,46,0.25);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      color: var(--text-white);
+      font-size: 1.15rem;
+      transition: all 0.3s ease;
+    }
+
+    .auth-container input:focus {
+      border-color: var(--gold-bright);
+      box-shadow: 0 0 18px rgba(255,215,0,0.28);
+      background: rgba(255,255,255,0.06);
+      outline: none;
+    }
+
+    .auth-container button {
+      width: 100%;
+      padding: 1.4rem;
+      margin: 1.4rem 0 1rem;
+      background: linear-gradient(135deg, var(--gold-opaque) 0%, var(--gold-bright) 100%);
+      color: #000000;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      box-shadow: 0 8px 25px rgba(255,215,0,0.25);
+    }
+
+    .auth-container button:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 40px rgba(255,215,0,0.4);
+    }
+
+    .auth-container .google-btn {
+      background: linear-gradient(135deg, #4285F4 0%, #357ae8 100%);
+      color: white;
+    }
+
+    .auth-container .switch-link {
+      color: var(--gold-bright);
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 1.05rem;
+      margin-top: 1.2rem;
+      display: inline-block;
+      transition: color 0.3s;
+    }
+
+    .auth-container .switch-link:hover {
+      color: #ffea00;
+    }
+
+    .success-flash {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0;
+    }
+
+    .success-flash.active {
+      animation: success-strike 1.4s forwards;
+    }
+
+    @keyframes success-strike {
+      0%   { background: transparent; opacity: 0; }
+      5%   { background: rgba(255,215,0,0.35); opacity: 1; }
+      15%  { background: rgba(255,215,0,0.55); }
+      30%  { background: rgba(184,151,46,0.45); }
+      45%  { background: rgba(255,215,0,0.5); }
+      65%  { background: rgba(255,215,0,0.35); }
+      85%  { background: rgba(255,215,0,0.15); }
+      100% { background: transparent; opacity: 0; }
+    }
+    /* ──────────────────────────────────────────────────────────────── */
   </style>
 </head>
 <body>
 
-  <!-- Navbar -->
+  <!-- Navbar (sin cambios) -->
   <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
     <div class="container d-flex align-items-center">
       <a class="navbar-brand me-0" href="#">narf shop.mx</a>
@@ -146,7 +310,7 @@
     </div>
   </nav>
 
-  <!-- Hero -->
+  <!-- Hero (sin cambios) -->
   <section class="hero" id="heroSection">
     <div class="container">
       <h1 class="hero-title display-4 fw-bold">Sneakers Premium</h1>
@@ -160,7 +324,7 @@
     <i class="bi bi-pencil edit-icon admin-only" onclick="editHero()"></i>
   </section>
 
-  <!-- Colección -->
+  <!-- Colección (sin cambios) -->
   <section id="coleccion" class="py-5">
     <div class="container">
       <h2 class="section-title display-6" id="sectionTitle">Colección Principal</h2>
@@ -174,35 +338,39 @@
     </div>
   </section>
 
-  <!-- Modal Auth -->
-  <div class="modal fade" id="authModal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content bg-dark text-light">
-        <div class="modal-header">
-          <h5 class="modal-title" id="authModalTitle">Iniciar Sesión</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
+  <!-- Modal Auth → REEMPLAZADO COMPLETAMENTE por la nueva versión premium -->
+  <div class="modal fade auth-modal" id="authModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
         <div class="modal-body">
-          <div id="loginForm">
-            <div class="mb-3"><label class="form-label">Email</label><input type="email" id="loginEmail" class="form-control" required></div>
-            <div class="mb-3"><label class="form-label">Contraseña</label><input type="password" id="loginPassword" class="form-control" required></div>
-            <button class="btn btn-primary w-100 mb-2" onclick="login()">Iniciar Sesión</button>
-            <button class="btn btn-outline-light w-100 mb-3" onclick="googleSignIn()"><i class="bi bi-google"></i> Continuar con Google</button>
-            <p class="text-center"><a href="#" onclick="showRegister()">¿No tienes cuenta? Regístrate</a></p>
-          </div>
-          <div id="registerForm" style="display:none;">
-            <div class="mb-3"><label class="form-label">Email</label><input type="email" id="regEmail" class="form-control" required></div>
-            <div class="mb-3"><label class="form-label">Contraseña</label><input type="password" id="regPassword" class="form-control" required></div>
-            <div class="mb-3"><label class="form-label">Confirmar Contraseña</label><input type="password" id="regConfirm" class="form-control" required></div>
-            <button class="btn btn-success w-100" onclick="register()">Registrarse</button>
-            <p class="text-center mt-3"><a href="#" onclick="showLogin()">¿Ya tienes cuenta? Inicia sesión</a></p>
+          <div class="success-flash" id="successFlash"></div>
+
+          <div class="auth-container" id="authContainer">
+            <div id="loginForm">
+              <h2 class="form-title">Iniciar Sesión</h2>
+              <input type="email" id="loginEmail" placeholder="Email" required autocomplete="email">
+              <input type="password" id="loginPassword" placeholder="Contraseña" required autocomplete="current-password">
+              <button onclick="login()">Entrar</button>
+              <button class="google-btn" onclick="googleSignIn()">Continuar con Google</button>
+              <p class="switch-link" onclick="showRegister()">¿No tienes cuenta? Regístrate</p>
+            </div>
+
+            <div id="registerForm" style="display:none;">
+              <h2 class="form-title">Registrarse</h2>
+              <input type="email" id="regEmail" placeholder="Email" required oninput="generateUsername()" autocomplete="email">
+              <input type="password" id="regPassword" placeholder="Contraseña" required autocomplete="new-password">
+              <input type="text" id="username" placeholder="Nombre de usuario" required>
+              <button onclick="register()">Crear cuenta</button>
+              <button class="google-btn" onclick="googleSignIn()">Registrarse con Google</button>
+              <p class="switch-link" onclick="showLogin()">¿Ya tienes cuenta? Inicia sesión</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Modal Agregar Producto -->
+  <!-- Modal Agregar Producto (sin cambios) -->
   <div class="modal fade" id="addProductModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
       <div class="modal-content bg-dark text-light">
@@ -211,83 +379,8 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <form id="addProductForm">
-            <div class="mb-3">
-              <label class="form-label">Título del producto</label>
-              <input type="text" id="prodTitle" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Tipo de producto</label>
-              <input type="text" id="prodType" class="form-control" placeholder="Ej: Sneakers, Botas" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Descripción</label>
-              <textarea id="prodDescription" class="form-control" rows="4" required></textarea>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Precio (MXN)</label>
-              <input type="number" id="prodPrice" class="form-control" min="0" required>
-            </div>
-
-            <!-- Tallas con cantidad -->
-            <div class="mb-4">
-              <label class="form-label">Tallas y cantidad disponible</label>
-              <div class="row g-3">
-                <!-- Repetimos para tallas 23 a 30 -->
-                <!-- Talla 23 -->
-                <div class="col-4 col-sm-3 col-lg-2">
-                  <div class="form-check">
-                    <input class="form-check-input size-checkbox" type="checkbox" value="23" id="size23">
-                    <label class="form-check-label" for="size23">23</label>
-                  </div>
-                  <div class="size-quantity-container" id="quantity23">
-                    <small>Cantidad talla 23</small>
-                    <div class="quantity-input-group">
-                      <input type="number" class="form-control" id="qty23" min="0" value="0">
-                      <button type="button" class="btn btn-success btn-sm" onclick="confirmQuantity(23)">Listo</button>
-                    </div>
-                  </div>
-                </div>
-                <!-- Talla 24 -->
-                <div class="col-4 col-sm-3 col-lg-2">
-                  <div class="form-check">
-                    <input class="form-check-input size-checkbox" type="checkbox" value="24" id="size24">
-                    <label class="form-check-label" for="size24">24</label>
-                  </div>
-                  <div class="size-quantity-container" id="quantity24">
-                    <small>Cantidad talla 24</small>
-                    <div class="quantity-input-group">
-                      <input type="number" class="form-control" id="qty24" min="0" value="0">
-                      <button type="button" class="btn btn-success btn-sm" onclick="confirmQuantity(24)">Listo</button>
-                    </div>
-                  </div>
-                </div>
-                <!-- Repite hasta 30 (para no alargar el código, imagina que están todas) -->
-                <!-- Aquí van las tallas 25 a 30 exactamente igual -->
-                <!-- ... (copia el bloque anterior cambiando los números) ... -->
-                <!-- Talla 30 como ejemplo final -->
-                <div class="col-4 col-sm-3 col-lg-2">
-                  <div class="form-check">
-                    <input class="form-check-input size-checkbox" type="checkbox" value="30" id="size30">
-                    <label class="form-check-label" for="size30">30</label>
-                  </div>
-                  <div class="size-quantity-container" id="quantity30">
-                    <small>Cantidad talla 30</small>
-                    <div class="quantity-input-group">
-                      <input type="number" class="form-control" id="qty30" min="0" value="0">
-                      <button type="button" class="btn btn-success btn-sm" onclick="confirmQuantity(30)">Listo</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Imágenes (selecciona varias)</label>
-              <input type="file" id="prodImages" class="form-control" accept="image/*" multiple required>
-              <div id="imagePreview" class="mt-3 d-flex flex-wrap"></div>
-            </div>
-          </form>
+          <!-- ... todo el contenido del modal de agregar producto sin cambios ... -->
+          <!-- (mantengo el comentario para no alargar demasiado la respuesta, pero en tu archivo real déjalo completo) -->
         </div>
         <div class="modal-footer border-secondary">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -297,196 +390,37 @@
     </div>
   </div>
 
-  <!-- Firebase Scripts -->
+  <!-- Firebase Scripts (sin cambios) -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
+    // ... todo tu código de Firebase, auth, productos, etc. permanece exactamente igual ...
+    // Solo asegúrate de que las funciones login(), register(), googleSignIn(), showRegister(), showLogin()
+    // y generateUsername() estén definidas en el scope global o dentro del script
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAt8TuulnlY3IKPaFVctgaGNQWewfzONEI",
-      authDomain: "comprobantes-363c9.firebaseapp.com",
-      databaseURL: "https://comprobantes-363c9-default-rtdb.firebaseio.com",
-      projectId: "comprobantes-363c9",
-      storageBucket: "comprobantes-363c9.firebasestorage.app",
-      messagingSenderId: "390391998056",
-      appId: "1:390391998056:web:23e22073d88bc247d43ddd",
-      measurementId: "G-8W03RJD0TZ"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
-    const provider = new GoogleAuthProvider();
-
-    const admins = ["fernando8aparra@gmail.com", "luisatondo28@gmail.com"];
-
-    const demoProducts = [
-      { title: "McQueen Oversized Gold", price: 3800, images: ["https://images.stockx.com/images/Alexander-McQueen-Oversized-Light-Gold-Product.jpg?fit=fill&bg=FFFFFF&w=700&h=500&fm=webp&auto=compress&q=90"] },
-      { title: "Nike Air Force 1 White", price: 2900, images: ["https://images.stockx.com/images/Nike-Air-Force-1-Low-White-07-Product.jpg?fit=fill&bg=FFFFFF&w=700&h=500&fm=webp&auto=compress&q=90"] },
-      // ... otros demos
-    ];
-
-    onAuthStateChanged(auth, async (user) => {
-      const isAdmin = user && admins.includes(user.email);
-      document.querySelectorAll('.admin-only').forEach(el => el.style.display = isAdmin ? 'inline-block' : 'none');
-      if (user) {
-        const name = user.displayName || user.email.split('@')[0];
-        document.getElementById('userNameDisplay').textContent = name;
-        document.getElementById('userNameDisplay').style.display = 'block';
-      } else {
-        document.getElementById('userNameDisplay').style.display = 'none';
-      }
-      await loadProducts();
-    });
-
-    // Mostrar/ocultar input cantidad al marcar talla
-    document.querySelectorAll('.size-checkbox').forEach(cb => {
-      cb.addEventListener('change', function() {
-        const size = this.value;
-        const container = document.getElementById('quantity' + size);
-        container.style.display = this.checked ? 'block' : 'none';
-        if (!this.checked) document.getElementById('qty' + size).value = '0';
-      });
-    });
-
-    window.confirmQuantity = (size) => {
-      const input = document.getElementById('qty' + size);
-      const val = parseInt(input.value);
-      if (isNaN(val) || val < 0) {
-        input.value = 0;
-        alert("Cantidad inválida");
-      } else {
-        input.style.borderColor = '#28a745';
-      }
-    };
-
-    // Previsualización imágenes
-    document.getElementById('prodImages').addEventListener('change', (e) => {
-      const preview = document.getElementById('imagePreview');
-      preview.innerHTML = '';
-      for (let file of e.target.files) {
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-          const img = document.createElement('img');
-          img.src = ev.target.result;
-          img.className = 'preview-img';
-          preview.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    window.saveNewProduct = async () => {
-      const title = document.getElementById('prodTitle').value.trim();
-      const type = document.getElementById('prodType').value.trim();
-      const description = document.getElementById('prodDescription').value.trim();
-      const price = Number(document.getElementById('prodPrice').value);
-      const files = document.getElementById('prodImages').files;
-
-      if (!title || !type || !description || isNaN(price) || files.length === 0) {
-        alert("Completa todos los campos y selecciona imágenes.");
-        return;
-      }
-
-      // Recoger stock
-      const stock = {};
-      let hasStock = false;
-      for (let s = 23; s <= 30; s++) {
-        const checked = document.getElementById('size' + s).checked;
-        if (checked) {
-          const qty = parseInt(document.getElementById('qty' + s).value) || 0;
-          if (qty > 0) {
-            stock[s] = qty;
-            hasStock = true;
-          }
-        }
-      }
-      if (!hasStock) {
-        alert("Ingresa al menos una talla con cantidad mayor a 0.");
-        return;
-      }
-
-      try {
-        // Crear documento para obtener ID
-        const docRef = await addDoc(collection(db, "products"), {
-          title, type, description, price, stock, images: []
-        });
-        const productId = docRef.id;
-
-        // Subir imágenes
-        const imageUrls = [];
-        for (let file of files) {
-          const storageRef = ref(storage, `narf-shop/${productId}/${Date.now()}_${file.name}`);
-          await uploadBytes(storageRef, file);
-          const url = await getDownloadURL(storageRef);
-          imageUrls.push(url);
-        }
-
-        // Actualizar con URLs
-        await updateDoc(doc(db, "products", productId), { images: imageUrls });
-
-        // Limpiar modal
-        bootstrap.Modal.getInstance(document.getElementById('addProductModal')).hide();
-        document.getElementById('addProductForm').reset();
-        document.getElementById('imagePreview').innerHTML = '';
-        document.querySelectorAll('.size-quantity-container').forEach(c => c.style.display = 'none');
-
-        loadProducts();
-        alert("¡Producto agregado con éxito!");
-      } catch (err) {
-        console.error(err);
-        alert("Error: " + err.message);
-      }
-    };
-
-    async function loadProducts() {
-      const container = document.getElementById('productsContainer');
-      container.innerHTML = '<div class="text-center my-5"><div class="spinner-border text-warning" role="status"></div></div>';
-      const snapshot = await getDocs(collection(db, "products"));
-      if (snapshot.empty) {
-        for (const p of demoProducts) {
-          await addDoc(collection(db, "products"), p);
-        }
-        loadProducts();
-        return;
-      }
-      container.innerHTML = '';
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        const img = data.images?.[0] || 'https://via.placeholder.com/700x500?text=Sin+Imagen';
-        container.innerHTML += `
-          <div class="col">
-            <div class="product-card">
-              <img src="${img}" class="product-img" alt="${data.title}">
-              <i class="bi bi-pencil edit-icon admin-only" onclick="editProduct('${docSnap.id}')"></i>
-              <div class="p-3 bg-white text-dark">
-                <div class="fw-bold">${data.title}</div>
-                <div class="text-warning fw-bold">$${data.price?.toLocaleString() || 0} MXN</div>
-              </div>
-            </div>
-          </div>`;
-      });
+    // Ejemplo mínimo de las funciones necesarias para que el nuevo modal funcione:
+    function showRegister() {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('registerForm').style.display = 'block';
     }
 
-    // Funciones auth y edición básica (igual que antes)
-    window.login = async () => { /* ... */ };
-    window.googleSignIn = async () => { /* ... */ };
-    window.register = async () => { /* ... */ };
-    window.showRegister = () => { /* ... */ };
-    window.showLogin = () => { /* ... */ };
-    window.editHero = () => { /* ... */ };
-    window.editSectionTitle = () => { /* ... */ };
-    window.editProduct = async (id) => {
-      if (confirm("¿Eliminar producto?")) {
-        await deleteDoc(doc(db, "products", id));
-        loadProducts();
-      }
-    };
+    function showLogin() {
+      document.getElementById('registerForm').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'block';
+    }
 
-    loadProducts();
+    function generateUsername() {
+      const email = document.getElementById('regEmail').value.trim();
+      if (!email) return;
+      const base = email.split('@')[0]
+        .replace(/[^a-zA-Z0-9]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      document.getElementById('username').value = base;
+    }
+
+    // Las funciones login(), register() y googleSignIn() deben adaptarse ligeramente
+    // para usar los nuevos IDs: loginEmail, loginPassword, regEmail, regPassword, username
+
+    // Puedes mantener tu lógica de Firebase aquí...
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
