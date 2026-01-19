@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -138,6 +137,30 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.15);
             display: none;
         }
+        .quantity-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .quantity-group input {
+            width: 100px;
+            text-align: center;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+        .btn-listo {
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-weight: 600;
+        }
+        .btn-listo.confirmed {
+            background: #1e7e34;
+        }
         @media (max-width: 576px) {
             .navbar-brand { font-size: 1.1rem; }
             .nav-icon { font-size: 1.3rem; }
@@ -170,8 +193,8 @@
     <section id="adminSection" class="py-5">
         <div class="container px-4 px-lg-5">
             <h2 class="display-6 text-center mb-5 text-light">Panel de Administración</h2>
-            <div class="text-center mb-5 admin-only">
-                <button class="btn btn-warning btn-lg me-3" data-bs-toggle="modal" data-bs-target="#addProductModal">
+            <div class="text-center mb-5 d-flex justify-content-center gap-3 flex-wrap admin-only">
+                <button class="btn btn-warning btn-lg" data-bs-toggle="modal" data-bs-target="#addProductModal">
                     + Agregar Producto
                 </button>
                 <button class="btn btn-danger btn-lg" id="openDeleteMultipleModal">
@@ -384,7 +407,6 @@
                 toggle.setAttribute('data-bs-toggle', 'modal');
                 toggle.setAttribute('data-bs-target', '#authModal');
 
-                // Si no está autenticado, abrir modal automáticamente
                 const modal = new bootstrap.Modal(document.getElementById('authModal'));
                 modal.show();
             }
@@ -396,8 +418,9 @@
             if (isAdmin) {
                 await loadProducts();
             } else if (user) {
-                // Si está logueado pero no es admin
-                document.getElementById('productsContainer').innerHTML = '<div class="col-12 text-center text-warning">Acceso denegado. Solo administradores autorizados.</div>';
+                document.getElementById('productsContainer').innerHTML = '<div class="col-12 text-center text-warning fs-4">Acceso denegado. Solo administradores autorizados.</div>';
+            } else {
+                document.getElementById('productsContainer').innerHTML = '';
             }
         });
 
@@ -446,11 +469,157 @@
             }
         });
 
-        // Funciones de edición, guardado, eliminación (igual que antes)
-        window.editProduct = async (productId) => { /* código igual al anterior */ };
-        window.deleteProduct = async (productId) => { /* código igual al anterior */ };
-        window.deleteSelectedProducts = async () => { /* código igual al anterior */ };
-        window.saveProduct = async () => { /* código igual al anterior */ };
+        window.editProduct = async (productId) => {
+            try {
+                const docSnap = await getDoc(doc(db, "products", productId));
+                if (!docSnap.exists()) return alert("Producto no encontrado");
+                const data = docSnap.data();
+                document.getElementById('prodTitle').value = data.title || '';
+                document.getElementById('prodType').value = data.type || '';
+                document.getElementById('prodDescription').value = data.description || '';
+                document.getElementById('prodPrice').value = data.price || '';
+                document.querySelectorAll('.size-checkbox').forEach(cb => {
+                    const s = cb.value;
+                    const qtyInput = document.getElementById('qty' + s);
+                    const box = document.getElementById('quantity' + s);
+                    const btn = box.querySelector('.btn-listo');
+                    if (data.stock && data.stock[s] > 0) {
+                        cb.checked = true;
+                        qtyInput.value = data.stock[s];
+                        box.style.display = 'block';
+                        btn.classList.add('confirmed');
+                        btn.textContent = '¡Confirmado!';
+                    } else {
+                        cb.checked = false;
+                        qtyInput.value = 0;
+                        box.style.display = 'none';
+                        btn.classList.remove('confirmed');
+                        btn.textContent = 'Listo';
+                    }
+                });
+                const preview = document.getElementById('imagePreview');
+                preview.innerHTML = '';
+                if (data.images && data.images.length > 0) {
+                    data.images.forEach(url => {
+                        const img = document.createElement('img');
+                        img.src = url;
+                        img.className = 'preview-img';
+                        preview.appendChild(img);
+                    });
+                }
+                document.querySelector('#addProductModal .modal-title').textContent = 'Editar Producto';
+                editMode = true;
+                currentProductId = productId;
+                const modal = new bootstrap.Modal(document.getElementById('addProductModal'));
+                modal.show();
+            } catch (err) {
+                console.error(err);
+                alert("Error al cargar producto para editar");
+            }
+        };
+
+        window.deleteProduct = async (productId) => {
+            if (!confirm("¿Eliminar este producto? No se puede deshacer.")) return;
+            try {
+                await deleteDoc(doc(db, "products", productId));
+                const folderRef = ref(storage, `narf-shop/${productId}`);
+                const listResult = await listAll(folderRef);
+                for (const itemRef of listResult.items) {
+                    await deleteObject(itemRef);
+                }
+                await loadProducts();
+                alert("Producto eliminado");
+            } catch (err) {
+                alert("Error al eliminar: " + err.message);
+            }
+        };
+
+        window.deleteSelectedProducts = async () => {
+            const checkedInputs = document.querySelectorAll('#deleteProductList input:checked');
+            if (checkedInputs.length === 0) return alert("Selecciona al menos un producto");
+            if (!confirm(`¿Eliminar ${checkedInputs.length} producto(s) permanentemente?`)) return;
+
+            try {
+                for (let input of checkedInputs) {
+                    const productId = input.value;
+                    await deleteDoc(doc(db, "products", productId));
+                    const folderRef = ref(storage, `narf-shop/${productId}`);
+                    const listResult = await listAll(folderRef);
+                    for (const itemRef of listResult.items) {
+                        await deleteObject(itemRef);
+                    }
+                }
+                await loadProducts();
+                bootstrap.Modal.getInstance(document.getElementById('deleteProductsModal')).hide();
+                alert("Productos eliminados correctamente");
+            } catch (err) {
+                alert("Error al eliminar: " + err.message);
+            }
+        };
+
+        window.saveProduct = async () => {
+            const title = document.getElementById('prodTitle').value.trim();
+            const type = document.getElementById('prodType').value.trim();
+            const description = document.getElementById('prodDescription').value.trim();
+            const price = Number(document.getElementById('prodPrice').value);
+            const files = document.getElementById('prodImages').files;
+            if (!title || !type || !description || isNaN(price) || price < 0) {
+                return alert("Completa todos los campos obligatorios correctamente.");
+            }
+            const stock = {};
+            let hasStock = false;
+            for (let s = 23; s <= 30; s++) {
+                if (document.getElementById('size' + s).checked) {
+                    const qty = parseInt(document.getElementById('qty' + s).value) || 0;
+                    if (qty > 0) {
+                        stock[s] = qty;
+                        hasStock = true;
+                    }
+                }
+            }
+            if (!hasStock) return alert("Indica al menos una talla con cantidad > 0.");
+            if (!editMode && files.length === 0) return alert("Selecciona al menos una imagen.");
+            try {
+                let productId = currentProductId;
+                let existingImages = [];
+                if (editMode) {
+                    const snap = await getDoc(doc(db, "products", currentProductId));
+                    existingImages = snap.data()?.images || [];
+                    await updateDoc(doc(db, "products", currentProductId), { title, type, description, price, stock });
+                } else {
+                    const docRef = await addDoc(collection(db, "products"), { title, type, description, price, stock, images: [] });
+                    productId = docRef.id;
+                }
+                const newUrls = [];
+                if (files.length > 0) {
+                    for (let file of files) {
+                        const storageRef = ref(storage, `narf-shop/${productId}/${Date.now()}_${file.name}`);
+                        await uploadBytes(storageRef, file);
+                        const url = await getDownloadURL(storageRef);
+                        newUrls.push(url);
+                    }
+                }
+                const finalImages = editMode ? [...existingImages, ...newUrls] : newUrls;
+                await updateDoc(doc(db, "products", productId), { images: finalImages });
+                bootstrap.Modal.getInstance(document.getElementById('addProductModal')).hide();
+                document.getElementById('addProductForm').reset();
+                document.getElementById('imagePreview').innerHTML = '';
+                document.querySelectorAll('.size-quantity-box').forEach(b => b.style.display = 'none');
+                document.querySelectorAll('.btn-listo').forEach(b => {
+                    b.classList.remove('confirmed');
+                    b.textContent = 'Listo';
+                });
+                document.querySelectorAll('.size-checkbox').forEach(cb => cb.checked = false);
+                document.querySelector('#addProductModal .modal-title').textContent = 'Agregar Nuevo Producto';
+                editMode = false;
+                currentProductId = null;
+                await loadProducts();
+                alert("Producto " + (editMode ? "actualizado" : "agregado") + " correctamente");
+            } catch (err) {
+                console.error(err);
+                alert("Error al guardar: " + err.message);
+            }
+        };
 
         async function loadProducts() {
             const container = document.getElementById('productsContainer');
@@ -461,7 +630,7 @@
                 allProducts = [];
 
                 if (snapshot.empty) {
-                    container.innerHTML = '<div class="col-12 text-center text-muted">No hay productos.</div>';
+                    container.innerHTML = '<div class="col-12 text-center text-muted">No hay productos aún.</div>';
                     return;
                 }
 
@@ -500,7 +669,26 @@
             }
         }
 
-        document.getElementById('openDeleteMultipleModal').addEventListener('click', () => { /* código igual al anterior */ });
+        document.getElementById('openDeleteMultipleModal').addEventListener('click', () => {
+            const list = document.getElementById('deleteProductList');
+            list.innerHTML = '';
+            if (allProducts.length === 0) {
+                list.innerHTML = '<p class="text-center">No hay productos para eliminar.</p>';
+            } else {
+                allProducts.forEach(p => {
+                    list.innerHTML += `
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="${p.id}" id="del_${p.id}">
+                            <label class="form-check-label" for="del_${p.id}">
+                                <strong>${p.data.title}</strong> - $${p.data.price?.toLocaleString() || '0'} MXN 
+                                (${Object.keys(p.data.stock || {}).length} tallas disponibles)
+                            </label>
+                        </div>`;
+                });
+            }
+            const modal = new bootstrap.Modal(document.getElementById('deleteProductsModal'));
+            modal.show();
+        });
 
         document.getElementById('logoutLink').addEventListener('click', (e) => {
             e.preventDefault();
