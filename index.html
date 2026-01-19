@@ -12,7 +12,7 @@
       --bg-dark: #0d0d0d;
       --text-light: #f0f0f0;
       --accent-gold: #d4af37;
-      --overlay: rgba(0,0,0,0.45); /* Reduje la opacidad para que el fondo se vea más vivo y "se adapte" mejor */
+      --overlay: rgba(0,0,0,0.45);
     }
     body {
       font-family: 'Montserrat', sans-serif;
@@ -31,7 +31,23 @@
     .nav-icon { color: var(--text-light); font-size: 1.5rem; cursor: pointer; }
     .nav-icon:hover { color: var(--accent-gold); }
     .search-container { flex-grow: 1; max-width: 800px; margin: 0 1.5rem; }
-    .user-name { font-size: 0.8rem; color: var(--text-light); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px; }
+    .dropdown-menu {
+      background-color: #222;
+      border: 1px solid #444;
+    }
+    .dropdown-item {
+      color: var(--text-light);
+    }
+    .dropdown-item:hover {
+      background-color: #333;
+      color: var(--accent-gold);
+    }
+    .user-name-dropdown {
+      color: var(--accent-gold);
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      pointer-events: none;
+    }
     .hero {
       height: 80vh;
       min-height: 600px;
@@ -151,9 +167,16 @@
         </div>
       </div>
       <div class="d-flex align-items-center">
-        <div class="user-section me-3 text-center">
-          <a class="nav-icon" data-bs-toggle="modal" data-bs-target="#authModal"><i class="bi bi-person"></i></a>
-          <small class="user-name" id="userNameDisplay" style="display:none;"></small>
+        <!-- User Dropdown / Login -->
+        <div class="dropdown text-center me-3">
+          <a class="nav-icon" id="userDropdownToggle" href="#" role="button">
+            <i class="bi bi-person"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" id="userDropdownMenu">
+            <li><div class="user-name-dropdown" id="userNameDisplay">Usuario</div></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="#" id="logoutLink">Cerrar sesión</a></li>
+          </ul>
         </div>
         <a href="#" class="nav-icon"><i class="bi bi-cart3"></i></a>
       </div>
@@ -282,7 +305,7 @@
   <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL, listAll, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
@@ -306,36 +329,68 @@
     let editMode = false;
     let currentProductId = null;
 
-    // Cargar logo desde Storage
+    // Cargar logo
     async function loadLogo() {
       try {
         const logoRef = ref(storage, 'logo/narf shop logo.jpg');
         const url = await getDownloadURL(logoRef);
-        const logoImg = document.getElementById('heroLogo');
-        if (logoImg) logoImg.src = url;
+        document.getElementById('heroLogo').src = url;
       } catch (err) {
         console.error('Error cargando logo:', err);
-        // Si no existe, puedes poner un fallback
         document.getElementById('heroLogo').style.display = 'none';
       }
     }
 
+    // Cerrar sesión
+    window.userSignOut = async () => {
+      try {
+        await signOut(auth);
+        alert("Sesión cerrada correctamente");
+      } catch (e) {
+        alert("Error al cerrar sesión: " + e.message);
+      }
+    };
+
     onAuthStateChanged(auth, async (user) => {
       const isAdmin = user && admins.includes(user.email);
-      document.querySelectorAll('.admin-only').forEach(el => el.style.display = isAdmin ? 'block' : 'none');
+      const toggle = document.getElementById('userDropdownToggle');
+      const menu = document.getElementById('userDropdownMenu');
+      const nameDisplay = document.getElementById('userNameDisplay');
+      const logoutLink = document.getElementById('logoutLink');
+
       if (user) {
+        // Usuario logueado → dropdown con nombre y cerrar sesión
         const name = user.displayName || user.email.split('@')[0];
-        document.getElementById('userNameDisplay').textContent = name;
-        document.getElementById('userNameDisplay').style.display = 'block';
+        nameDisplay.textContent = name;
+
+        toggle.classList.add('dropdown-toggle');
+        toggle.setAttribute('data-bs-toggle', 'dropdown');
+        toggle.removeAttribute('data-bs-target');
+        toggle.removeAttribute('data-bs-toggle-modal'); // por si acaso
+
+        menu.style.display = 'block';
+        logoutLink.onclick = userSignOut;
+
+        // Mostrar botones admin
+        document.querySelectorAll('.admin-only').forEach(el => el.style.display = isAdmin ? 'block' : 'none');
       } else {
-        document.getElementById('userNameDisplay').style.display = 'none';
+        // No logueado → click abre modal de login
+        nameDisplay.textContent = '';
+        toggle.classList.remove('dropdown-toggle');
+        toggle.removeAttribute('data-bs-toggle');
+        toggle.setAttribute('data-bs-toggle', 'modal');
+        toggle.setAttribute('data-bs-target', '#authModal');
+
+        menu.style.display = 'none';
+        document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
       }
+
       await loadProducts();
     });
 
-    // ... (el resto de funciones de tallas, confirmQuantity, preview imágenes, editProduct, deleteProduct, saveProduct quedan iguales al código anterior)
+    // ... (funciones de tallas, confirmQuantity, preview imágenes, editProduct, deleteProduct, saveProduct son las mismas del código anterior)
 
-    // Cargar productos (actualizado con descripción breve, precio estilizado y "Ver más")
+    // Cargar productos (igual que antes, con Ver más, descripción breve, precio subrayado, botones admin)
     async function loadProducts() {
       const container = document.getElementById('productsContainer');
       container.innerHTML = '<div class="text-center my-5"><div class="spinner-border text-warning" role="status"></div></div>';
@@ -375,9 +430,8 @@
       }
     }
 
-    // ... (login, googleSignIn, register, showRegister, showLogin quedan iguales)
+    // Funciones de autenticación (login, googleSignIn, register, showRegister, showLogin) iguales
 
-    // Cargar logo y productos al iniciar
     loadLogo();
     loadProducts();
   </script>
