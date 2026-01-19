@@ -24,10 +24,6 @@
             backdrop-filter: blur(12px);
             border-bottom: 1px solid #222;
             padding: 0.6rem 0;
-            transition: padding-bottom 0.3s ease;
-        }
-        .navbar-custom.expanded {
-            padding-bottom: 3.5rem;
         }
         .navbar-brand {
             font-size: 1.3rem;
@@ -59,23 +55,6 @@
             max-width: 600px;
             margin: 0 0.8rem;
         }
-        .mobile-search-icon {
-            display: none;
-            color: var(--text-light);
-        }
-        .mobile-search-bar {
-            display: none;
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            padding: 0.5rem 1rem;
-            background-color: rgba(13,13,13,0.95);
-            z-index: 1000;
-        }
-        .mobile-search-bar .input-group {
-            width: 100%;
-        }
         .dropdown-menu {
             background-color: #222;
             border: 1px solid #444;
@@ -103,7 +82,6 @@
             align-items: center;
             text-align: center;
             position: relative;
-            transition: margin-top 0.3s ease;
         }
         .hero-content {
             width: 100%;
@@ -120,7 +98,7 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.5);
             border-radius: 50%;
         }
-        .admin-only { display: none; }
+        .admin-only { display: none !important; }
         .product-card {
             background: white;
             color: black;
@@ -163,56 +141,30 @@
             color: #000;
             text-decoration: underline;
         }
-        .admin-pencil {
+        .admin-controls {
+            opacity: 0;
+            transition: opacity 0.3s ease;
             z-index: 10;
         }
-        .admin-pencil .dropdown-toggle {
-            background: rgba(255,255,255,0.95);
-            border: none;
+        .product-card:hover .admin-controls {
+            opacity: 1;
+        }
+        .admin-controls button {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            width: 38px;
-            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.4);
-        }
-        .admin-pencil .dropdown-toggle i {
-            color: #333;
-            font-size: 1.2rem;
-        }
-        .admin-pencil .dropdown-toggle:hover {
-            background: var(--accent-gold);
-        }
-        .admin-pencil .dropdown-toggle:hover i {
-            color: white;
-        }
-        .preview-img-container {
-            position: relative;
-            display: inline-block;
-            margin: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
         .preview-img {
             width: 80px;
             height: 80px;
             object-fit: cover;
             border-radius: 10px;
+            margin: 6px;
             border: 3px solid var(--accent-gold);
-        }
-        .preview-remove {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: red;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            line-height: 20px;
-            text-align: center;
-            cursor: pointer;
-            font-size: 12px;
         }
         .size-quantity-box {
             background: white;
@@ -251,7 +203,6 @@
             background-color: #ffffff;
             color: #000000;
             padding-bottom: 60px;
-            transition: margin-top 0.3s ease;
         }
         #coleccion h2 {
             color: #000000;
@@ -301,57 +252,37 @@
             .search-input, .search-btn { height: 38px; }
             .nav-icon { font-size: 1.3rem; }
             .product-img { height: 200px; }
-            .search-container { display: none; }
-            .mobile-search-icon { display: block; margin-right: 1rem; }
+            .search-container { margin: 0 0.2rem; }
             .d-flex.align-items-center.ms-2 { margin-left: 0 !important; }
             .dropdown.text-center.me-3 { margin-right: 0.2rem !important; }
             .container.d-flex { padding-left: 0.5rem; padding-right: 0.5rem; }
-            #productsContainer {
-                flex-direction: row;
-                overflow-x: auto;
-                overflow-y: hidden;
-                white-space: nowrap;
-            }
-            #productsContainer .col {
-                flex: 0 0 80%;
-                max-width: 80%;
-                display: inline-block;
-                white-space: normal;
-            }
         }
     </style>
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-custom fixed-top">
-        <div class="container d-flex align-items-center flex-nowrap position-relative">
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container d-flex align-items-center flex-nowrap">
             <a class="navbar-brand me-2" href="#">narf shop.mx</a>
             <div class="search-container">
                 <div class="input-group">
-                    <input type="text" id="searchInput" class="form-control search-input" placeholder="Buscar sneakers premium...">
-                    <button class="btn search-btn" id="searchButton"><i class="bi bi-search"></i></button>
+                    <input type="text" class="form-control search-input" placeholder="Buscar sneakers premium...">
+                    <button class="btn search-btn"><i class="bi bi-search"></i></button>
                 </div>
             </div>
             <div class="d-flex align-items-center ms-2">
-                <a href="#" class="nav-icon mobile-search-icon" id="mobileSearchToggle"><i class="bi bi-search"></i></a>
                 <div class="dropdown text-center me-3">
-                    <a class="nav-icon" id="userDropdownToggle" href="#" role="button">
+                    <a class="nav-icon" id="userDropdownToggle" href="#" role="button" aria-expanded="false">
                         <i class="bi bi-person"></i>
                     </a>
                     <div id="mobileUserName" class="d-block d-lg-none text-light text-center mt-1" style="font-size: 0.8rem;"></div>
-                    <ul class="dropdown-menu dropdown-menu-end" id="userDropdownMenu">
+                    <ul class="dropdown-menu dropdown-menu-end" id="userDropdownMenu" aria-labelledby="userDropdownToggle">
                         <li><div class="user-name-dropdown" id="userNameDisplay"></div></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item text-danger" href="#" id="logoutLink">Cerrar sesión</a></li>
                     </ul>
                 </div>
                 <a href="#" class="nav-icon"><i class="bi bi-cart3"></i></a>
-            </div>
-            <div class="mobile-search-bar" id="mobileSearchBar">
-                <div class="input-group">
-                    <input type="text" id="mobileSearchInput" class="form-control search-input" placeholder="Buscar sneakers premium...">
-                    <button class="btn search-btn" id="mobileSearchButton"><i class="bi bi-search"></i></button>
-                </div>
             </div>
         </div>
     </nav>
@@ -366,18 +297,43 @@
     </section>
     <!-- Colección -->
     <section id="coleccion" class="py-5">
-        <div class="container">
-            <h2 class="display-6 text-center mb-5">Colección Principal</h2>
-            <div class="text-center mb-4">
-                <button class="btn btn-warning btn-lg admin-only" data-bs-toggle="modal" data-bs-target="#addProductModal">
-                    + Agregar Producto
-                </button>
+        <div class="container-fluid">
+            <div class="container px-4 px-lg-5">
+                <h2 class="display-6 text-center mb-5">Colección Principal</h2>
+                <div class="text-center mb-5 d-flex justify-content-center gap-3 flex-wrap admin-only">
+                    <button class="btn btn-warning btn-lg" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                        + Agregar Producto
+                    </button>
+                    <button class="btn btn-danger btn-lg" id="openDeleteMultipleModal">
+                        Eliminar Productos
+                    </button>
+                </div>
             </div>
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 g-lg-5" id="productsContainer">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6 g-4 g-lg-5 px-4 px-lg-5" id="productsContainer">
                 <!-- Productos se cargan aquí -->
             </div>
         </div>
     </section>
+
+    <!-- Modal Eliminación Múltiple -->
+    <div class="modal fade" id="deleteProductsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title">Seleccionar productos a eliminar</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="deleteProductList" class="d-flex flex-column gap-3"></div>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteSelectedProducts()">Eliminar seleccionados</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Autenticación -->
     <div class="modal fade auth-modal" id="authModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -433,6 +389,7 @@
             </div>
         </div>
     </div>
+
     <!-- Modal Agregar/Editar Producto -->
     <div class="modal fade" id="addProductModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
@@ -479,12 +436,14 @@
             </div>
         </div>
     </div>
+
     <!-- Firebase + Lógica -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL, listAll, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
+
         const firebaseConfig = {
             apiKey: "AIzaSyAt8TuulnlY3IKPaFVctgaGNQWewfzONEI",
             authDomain: "comprobantes-363c9.firebaseapp.com",
@@ -493,15 +452,20 @@
             messagingSenderId: "390391998056",
             appId: "1:390391998056:web:23e22073d88bc247d43ddd"
         };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
         const storage = getStorage(app);
         const provider = new GoogleAuthProvider();
+
+        // SOLO ESTOS DOS EMAILS TIENEN ACCESO COMPLETO A FUNCIONES ADMIN
         const admins = ["fernando8aparra@gmail.com", "luisatondo28@gmail.com"];
+
         let editMode = false;
         let currentProductId = null;
-        let allProducts = [];
+        let allProducts = []; // Para eliminación múltiple
+
         async function loadLogo() {
             try {
                 const logoRef = ref(storage, 'logo/narf shop logo.jpg');
@@ -512,7 +476,7 @@
                 document.getElementById('heroLogo').style.display = 'none';
             }
         }
-        // Generar tallas dinámicamente
+
         function populateSizes() {
             const container = document.getElementById('sizesContainer');
             if (container.children.length > 0) return;
@@ -550,51 +514,47 @@
                 });
             });
         }
+
         onAuthStateChanged(auth, async (user) => {
             const isAdmin = user && admins.includes(user.email);
+
             const toggle = document.getElementById('userDropdownToggle');
             const menu = document.getElementById('userDropdownMenu');
             const nameDisplay = document.getElementById('userNameDisplay');
             const mobileName = document.getElementById('mobileUserName');
+
             if (user) {
                 let name = user.displayName || user.email.split('@')[0];
                 name = name.charAt(0).toUpperCase() + name.slice(1);
                 const shortName = name.length > 12 ? name.substring(0, 10) + '...' : name;
                 nameDisplay.textContent = shortName;
                 mobileName.textContent = shortName;
+
                 toggle.classList.add('dropdown-toggle');
                 toggle.setAttribute('data-bs-toggle', 'dropdown');
                 toggle.removeAttribute('data-bs-target');
-                menu.style.display = 'block';
+                toggle.setAttribute('aria-expanded', 'false');
             } else {
                 nameDisplay.textContent = '';
                 mobileName.textContent = '';
+
                 toggle.classList.remove('dropdown-toggle');
                 toggle.removeAttribute('data-bs-toggle');
+                toggle.removeAttribute('aria-expanded');
                 toggle.setAttribute('data-bs-toggle', 'modal');
                 toggle.setAttribute('data-bs-target', '#authModal');
-                menu.style.display = 'none';
+
+                menu.classList.remove('show');
             }
+
+            // MOSTRAR ELEMENTOS ADMIN SOLO SI ES UNO DE LOS DOS ADMINS
             document.querySelectorAll('.admin-only').forEach(el => {
-                el.style.display = isAdmin ? 'block' : 'none';
+                el.style.display = isAdmin ? 'flex' : 'none';
             });
-            await loadProducts(true);
-            setupUserDropdownToggle();
+
+            await loadProducts();
         });
-        function setupUserDropdownToggle() {
-            const toggle = document.getElementById('userDropdownToggle');
-            const dropdown = new bootstrap.Dropdown(toggle);
-            toggle.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (auth.currentUser) {
-                    dropdown.toggle();
-                } else {
-                    // For not logged in, open modal
-                    const modal = new bootstrap.Modal(document.getElementById('authModal'));
-                    modal.show();
-                }
-            });
-        }
+
         window.login = async () => {
             const email = document.getElementById('loginEmail').value.trim();
             const pass = document.getElementById('loginPassword').value;
@@ -604,12 +564,14 @@
                 bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();
             } catch (e) { alert("Error: " + e.message); }
         };
+
         window.googleSignIn = async () => {
             try {
                 await signInWithPopup(auth, provider);
                 bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();
             } catch (e) { alert("Error Google: " + e.message); }
         };
+
         window.register = async () => {
             const email = document.getElementById('regEmail').value.trim();
             const pass = document.getElementById('regPassword').value;
@@ -621,6 +583,7 @@
                 bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();
             } catch (e) { alert("Error: " + e.message); }
         };
+
         window.confirmQuantity = (size) => {
             const input = document.getElementById('qty' + size);
             const btn = input.closest('.size-quantity-box').querySelector('.btn-listo');
@@ -633,28 +596,22 @@
             btn.classList.add('confirmed');
             btn.textContent = '¡Confirmado!';
         };
+
         document.getElementById('prodImages').addEventListener('change', (e) => {
             const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
             for (let file of e.target.files) {
                 const reader = new FileReader();
                 reader.onload = (ev) => {
-                    const imgWrapper = document.createElement('div');
-                    imgWrapper.className = 'preview-img-container';
                     const img = document.createElement('img');
                     img.src = ev.target.result;
                     img.className = 'preview-img';
-                    img.dataset.type = 'new';
-                    const removeBtn = document.createElement('button');
-                    removeBtn.className = 'preview-remove';
-                    removeBtn.innerHTML = 'x';
-                    removeBtn.onclick = () => imgWrapper.remove();
-                    imgWrapper.appendChild(img);
-                    imgWrapper.appendChild(removeBtn);
-                    preview.appendChild(imgWrapper);
+                    preview.appendChild(img);
                 };
                 reader.readAsDataURL(file);
             }
         });
+
         window.editProduct = async (productId) => {
             try {
                 const docSnap = await getDoc(doc(db, "products", productId));
@@ -687,20 +644,10 @@
                 preview.innerHTML = '';
                 if (data.images && data.images.length > 0) {
                     data.images.forEach(url => {
-                        const imgWrapper = document.createElement('div');
-                        imgWrapper.className = 'preview-img-container';
                         const img = document.createElement('img');
                         img.src = url;
                         img.className = 'preview-img';
-                        img.dataset.type = 'existing';
-                        img.dataset.url = url;
-                        const removeBtn = document.createElement('button');
-                        removeBtn.className = 'preview-remove';
-                        removeBtn.innerHTML = 'x';
-                        removeBtn.onclick = () => imgWrapper.remove();
-                        imgWrapper.appendChild(img);
-                        imgWrapper.appendChild(removeBtn);
-                        preview.appendChild(imgWrapper);
+                        preview.appendChild(img);
                     });
                 }
                 document.querySelector('#addProductModal .modal-title').textContent = 'Editar Producto';
@@ -713,6 +660,7 @@
                 alert("Error al cargar producto");
             }
         };
+
         window.deleteProduct = async (productId) => {
             if (!confirm("¿Eliminar este producto? No se puede deshacer.")) return;
             try {
@@ -722,19 +670,42 @@
                 for (const itemRef of listResult.items) {
                     await deleteObject(itemRef);
                 }
-                await loadProducts(true);
+                await loadProducts();
                 alert("Producto eliminado");
             } catch (err) {
                 alert("Error al eliminar: " + err.message);
             }
         };
+
+        window.deleteSelectedProducts = async () => {
+            const checkedInputs = document.querySelectorAll('#deleteProductList input:checked');
+            if (checkedInputs.length === 0) return alert("Selecciona al menos un producto");
+            if (!confirm(`¿Eliminar ${checkedInputs.length} producto(s) permanentemente?`)) return;
+
+            try {
+                for (let input of checkedInputs) {
+                    const productId = input.value;
+                    await deleteDoc(doc(db, "products", productId));
+                    const folderRef = ref(storage, `narf-shop/${productId}`);
+                    const listResult = await listAll(folderRef);
+                    for (const itemRef of listResult.items) {
+                        await deleteObject(itemRef);
+                    }
+                }
+                await loadProducts();
+                bootstrap.Modal.getInstance(document.getElementById('deleteProductsModal')).hide();
+                alert("Productos eliminados correctamente");
+            } catch (err) {
+                alert("Error al eliminar: " + err.message);
+            }
+        };
+
         window.saveProduct = async () => {
             const title = document.getElementById('prodTitle').value.trim();
             const type = document.getElementById('prodType').value.trim();
             const description = document.getElementById('prodDescription').value.trim();
             const price = Number(document.getElementById('prodPrice').value);
             const files = document.getElementById('prodImages').files;
-            const preview = document.getElementById('imagePreview');
             if (!title || !type || !description || isNaN(price) || price < 0) {
                 return alert("Completa todos los campos obligatorios correctamente.");
             }
@@ -753,8 +724,10 @@
             if (!editMode && files.length === 0) return alert("Selecciona al menos una imagen.");
             try {
                 let productId = currentProductId;
-                let existingImages = editMode ? Array.from(preview.querySelectorAll('img[data-type="existing"]')).map(img => img.dataset.url) : [];
+                let existingImages = [];
                 if (editMode) {
+                    const snap = await getDoc(doc(db, "products", currentProductId));
+                    existingImages = snap.data()?.images || [];
                     await updateDoc(doc(db, "products", currentProductId), { title, type, description, price, stock });
                 } else {
                     const docRef = await addDoc(collection(db, "products"), { title, type, description, price, stock, images: [] });
@@ -769,7 +742,7 @@
                         newUrls.push(url);
                     }
                 }
-                const finalImages = [...existingImages, ...newUrls];
+                const finalImages = editMode ? [...existingImages, ...newUrls] : newUrls;
                 await updateDoc(doc(db, "products", productId), { images: finalImages });
                 bootstrap.Modal.getInstance(document.getElementById('addProductModal')).hide();
                 document.getElementById('addProductForm').reset();
@@ -783,83 +756,89 @@
                 document.querySelector('#addProductModal .modal-title').textContent = 'Agregar Nuevo Producto';
                 editMode = false;
                 currentProductId = null;
-                await loadProducts(true);
+                await loadProducts();
                 alert(editMode ? "Producto actualizado" : "Producto agregado");
             } catch (err) {
                 console.error(err);
                 alert("Error al guardar: " + err.message);
             }
         };
-        async function loadProducts(loadAll = false) {
+
+        async function loadProducts() {
             const container = document.getElementById('productsContainer');
             container.innerHTML = '<div class="text-center my-5"><div class="spinner-border text-warning" role="status"></div></div>';
             try {
                 const snapshot = await getDocs(collection(db, "products"));
+                container.innerHTML = '';
                 allProducts = [];
+
+                if (snapshot.empty) {
+                    container.innerHTML = '<p class="text-center text-muted col-12">No hay productos aún.</p>';
+                    return;
+                }
+
                 snapshot.forEach(doc => {
+                    const id = doc.id;
                     const d = doc.data();
-                    d.id = doc.id;
-                    allProducts.push(d);
+                    allProducts.push({id, data: d});
+
+                    const img = d.images && d.images.length > 0 ? d.images[0] : 'https://via.placeholder.com/300x270?text=Sin+Imagen';
+                    const descBreve = d.description ? d.description.substring(0, 120) + (d.description.length > 120 ? '...' : '') : 'Sin descripción';
+
+                    container.innerHTML += `
+                        <div class="col">
+                            <div class="product-card">
+                                <div class="position-absolute top-0 end-0 p-3 admin-only admin-controls d-flex flex-column gap-2">
+                                    <button class="btn btn-warning" onclick="editProduct('${id}')">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </button>
+                                    <button class="btn btn-danger" onclick="deleteProduct('${id}')">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </div>
+                                <img src="${img}" class="product-img" alt="${d.title}">
+                                <div class="product-info">
+                                    <h6 class="product-title">${d.title}</h6>
+                                    <p class="product-desc">${descBreve}</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                                        <span class="product-price">$${d.price?.toLocaleString() || '0'} MXN</span>
+                                        <a href="product.html?id=${id}" class="btn btn-warning btn-sm">Ver más</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
                 });
-                renderProducts(allProducts);
             } catch (err) {
                 container.innerHTML = '<p class="text-center text-danger">Error al cargar productos.</p>';
             }
         }
-        function renderProducts(products) {
-            const container = document.getElementById('productsContainer');
-            container.innerHTML = '';
-            if (products.length === 0) {
-                container.innerHTML = '<p class="text-center text-muted col-12">No hay productos que coincidan con la búsqueda.</p>';
-                return;
+
+        document.getElementById('openDeleteMultipleModal').addEventListener('click', () => {
+            const list = document.getElementById('deleteProductList');
+            list.innerHTML = '';
+            if (allProducts.length === 0) {
+                list.innerHTML = '<p class="text-center">No hay productos para eliminar.</p>';
+            } else {
+                allProducts.forEach(p => {
+                    list.innerHTML += `
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="${p.id}" id="del_${p.id}">
+                            <label class="form-check-label" for="del_${p.id}">
+                                <strong>${p.data.title}</strong> - $${p.data.price?.toLocaleString() || '0'} MXN 
+                                (${Object.keys(p.data.stock || {}).length} tallas disponibles)
+                            </label>
+                        </div>`;
+                });
             }
-            products.forEach(d => {
-                const img = d.images && d.images.length > 0 ? d.images[0] : 'https://via.placeholder.com/300x270?text=Sin+Imagen';
-                const descBreve = d.description ? d.description.substring(0, 120) + (d.description.length > 120 ? '...' : '') : 'Sin descripción';
-                container.innerHTML += `
-                    <div class="col">
-                        <div class="product-card">
-                            <div class="position-absolute top-0 end-0 p-2 admin-only admin-pencil">
-                                <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); editProduct('${d.id}')">Editar</a></li>
-                                    <li><a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); deleteProduct('${d.id}')">Eliminar</a></li>
-                                </ul>
-                            </div>
-                            <img src="${img}" class="product-img" alt="${d.title}">
-                            <div class="product-info">
-                                <h6 class="product-title">${d.title}</h6>
-                                <p class="product-desc">${descBreve}</p>
-                                <div class="d-flex justify-content-between align-items-center mt-auto">
-                                    <span class="product-price">$${d.price?.toLocaleString() || '0'} MXN</span>
-                                    <a href="product.html?id=${d.id}" class="btn btn-warning btn-sm">Ver más</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`;
-            });
-        }
-        function performSearch(queryStr) {
-            if (!queryStr) {
-                renderProducts(allProducts);
-                return;
-            }
-            const lowerQuery = queryStr.toLowerCase();
-            const filtered = allProducts.filter(p => 
-                p.title.toLowerCase().includes(lowerQuery) ||
-                p.type.toLowerCase().includes(lowerQuery) ||
-                p.description.toLowerCase().includes(lowerQuery)
-            );
-            renderProducts(filtered);
-        }
-        // Cerrar sesión
+            const modal = new bootstrap.Modal(document.getElementById('deleteProductsModal'));
+            modal.show();
+        });
+
         document.getElementById('logoutLink').addEventListener('click', (e) => {
             e.preventDefault();
             signOut(auth).then(() => alert("Sesión cerrada")).catch((e) => alert("Error: " + e.message));
         });
-        // Padding dinámico para navbar fixed
+
         function adjustBodyPadding() {
             const navbar = document.querySelector('.navbar-custom');
             if (navbar) {
@@ -868,47 +847,10 @@
         }
         window.addEventListener('load', adjustBodyPadding);
         window.addEventListener('resize', adjustBodyPadding);
-        // Mobile search toggle
-        const mobileSearchToggle = document.getElementById('mobileSearchToggle');
-        const mobileSearchBar = document.getElementById('mobileSearchBar');
-        const navbar = document.querySelector('.navbar-custom');
-        const hero = document.getElementById('heroSection');
-        const coleccion = document.getElementById('coleccion');
-        const mobileSearchInput = document.getElementById('mobileSearchInput');
-        if (mobileSearchToggle) {
-            mobileSearchToggle.addEventListener('click', () => {
-                if (mobileSearchBar.style.display === 'block') {
-                    mobileSearchBar.style.display = 'none';
-                    navbar.classList.remove('expanded');
-                    hero.style.marginTop = '0';
-                    coleccion.style.marginTop = '0';
-                } else {
-                    mobileSearchBar.style.display = 'block';
-                    navbar.classList.add('expanded');
-                    hero.style.marginTop = '3rem';
-                    coleccion.style.marginTop = '3rem';
-                    mobileSearchInput.focus();
-                }
-                adjustBodyPadding();
-            });
-        }
-        // Search functionality
-        const searchButton = document.getElementById('searchButton');
-        const searchInput = document.getElementById('searchInput');
-        if (searchButton) {
-            searchButton.addEventListener('click', () => {
-                performSearch(searchInput.value.trim());
-            });
-        }
-        const mobileSearchButton = document.getElementById('mobileSearchButton');
-        if (mobileSearchButton) {
-            mobileSearchButton.addEventListener('click', () => {
-                performSearch(mobileSearchInput.value.trim());
-            });
-        }
-        // Inicialización
+
         populateSizes();
         loadLogo();
+        loadProducts();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
