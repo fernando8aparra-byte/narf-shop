@@ -25,12 +25,36 @@
       border-bottom: 1px solid #222;
       padding: 0.8rem 0;
     }
-    .navbar-brand { font-size: 1.4rem; font-weight: 700; color: var(--text-light); text-transform: lowercase; }
-    .search-input { background-color: #222; border: none; color: var(--text-light); border-radius: 30px 0 0 30px; height: 45px; }
-    .search-btn { background-color: var(--accent-gold); border-radius: 0 30px 30px 0; width: 55px; height: 45px; }
-    .nav-icon { color: var(--text-light); font-size: 1.5rem; cursor: pointer; }
+    .navbar-brand { 
+      font-size: 1.4rem; 
+      font-weight: 700; 
+      color: var(--text-light); 
+      text-transform: lowercase; 
+    }
+    .search-input { 
+      background-color: #222; 
+      border: none; 
+      color: var(--text-light); 
+      border-radius: 30px 0 0 30px; 
+      height: 45px; 
+    }
+    .search-btn { 
+      background-color: var(--accent-gold); 
+      border-radius: 0 30px 30px 0; 
+      width: 55px; 
+      height: 45px; 
+    }
+    .nav-icon { 
+      color: var(--text-light); 
+      font-size: 1.5rem; 
+      cursor: pointer; 
+    }
     .nav-icon:hover { color: var(--accent-gold); }
-    .search-container { flex-grow: 1; max-width: 800px; margin: 0 1.5rem; }
+    .search-container { 
+      flex-grow: 1; 
+      max-width: 800px; 
+      margin: 0 1rem; 
+    }
     .dropdown-menu {
       background-color: #222;
       border: 1px solid #444;
@@ -66,6 +90,7 @@
       padding: 10px;
       border: 5px solid white;
       box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+      border-radius: 50%;
     }
     .admin-only { display: none; }
     .product-card {
@@ -106,27 +131,28 @@
       text-decoration: underline;
     }
     .admin-pencil {
-      opacity: 0;
-      transition: opacity 0.3s ease;
       z-index: 10;
     }
-    .product-card:hover .admin-pencil {
-      opacity: 1;
-    }
     .admin-pencil .dropdown-toggle {
-      background: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.95);
       border: none;
       border-radius: 50%;
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+      box-shadow: 0 3px 12px rgba(0,0,0,0.4);
     }
     .admin-pencil .dropdown-toggle i {
       color: #333;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
+    }
+    .admin-pencil .dropdown-toggle:hover {
+      background: var(--accent-gold);
+    }
+    .admin-pencil .dropdown-toggle:hover i {
+      color: white;
     }
     .preview-img {
       width: 90px;
@@ -177,7 +203,6 @@
     #coleccion h2 {
       color: #000000;
     }
-    /* Mejoras en modal de autenticación */
     .auth-modal .nav-tabs {
       border-bottom: 2px solid var(--accent-gold);
     }
@@ -206,12 +231,103 @@
       border: 1px solid #444;
       color: var(--accent-gold);
     }
+
+    /* Responsive para móviles */
+    @media (max-width: 768px) {
+      .hero {
+        height: 60vh;
+        min-height: 400px;
+      }
+      .hero h1 {
+        font-size: 2.2rem !important;
+      }
+      .hero .lead {
+        font-size: 1rem;
+      }
+      .hero .btn-lg {
+        font-size: 1rem;
+        padding: 0.6rem 1.5rem;
+      }
+      .hero-logo {
+        width: 100px;
+        height: 100px;
+        padding: 8px;
+      }
+      .navbar-brand {
+        font-size: 1.2rem;
+      }
+      .search-container {
+        margin: 0 0.5rem;
+        max-width: none;
+      }
+      .search-input, .search-btn {
+        height: 38px;
+        font-size: 0.9rem;
+      }
+      .search-btn {
+        width: 45px;
+      }
+      .nav-icon {
+        font-size: 1.3rem;
+      }
+      .product-img {
+        height: 220px;
+      }
+      .product-title {
+        font-size: 1rem;
+      }
+      .product-desc {
+        font-size: 0.85rem;
+      }
+      .product-price {
+        font-size: 0.95rem;
+      }
+      .btn-sm {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+      }
+      .admin-pencil .dropdown-toggle {
+        width: 35px;
+        height: 35px;
+      }
+      .admin-pencil .dropdown-toggle i {
+        font-size: 1.1rem;
+      }
+      #coleccion h2 {
+        font-size: 1.8rem;
+      }
+      .container {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .hero h1 {
+        font-size: 1.8rem !important;
+      }
+      .hero .lead {
+        font-size: 0.9rem;
+      }
+      .search-container {
+        order: 3;
+        margin-top: 0.5rem;
+        width: 100%;
+      }
+      .navbar .d-flex.align-items-center {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .product-img {
+        height: 200px;
+      }
+    }
   </style>
 </head>
 <body>
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
-    <div class="container d-flex align-items-center">
+    <div class="container d-flex align-items-center flex-wrap">
       <a class="navbar-brand me-0" href="#">narf shop.mx</a>
       <div class="search-container">
         <div class="input-group">
@@ -220,7 +336,6 @@
         </div>
       </div>
       <div class="d-flex align-items-center">
-        <!-- User Dropdown / Login -->
         <div class="dropdown text-center me-3">
           <a class="nav-icon" id="userDropdownToggle" href="#" role="button">
             <i class="bi bi-person"></i>
@@ -239,7 +354,7 @@
   <!-- Hero -->
   <section class="hero" id="heroSection">
     <div class="container">
-      <img id="heroLogo" class="hero-logo rounded-circle mb-4" alt="NARF Shop Logo">
+      <img id="heroLogo" class="hero-logo mb-4" alt="NARF Shop Logo">
       <h1 class="display-4 fw-bold">Sneakers Premium</h1>
       <p class="lead mt-3">Precios exclusivos en mayoreo • Calidad G5 • Envíos a todo México</p>
       <a href="#coleccion" class="btn btn-warning btn-lg mt-4">EXPLORAR COLECCIÓN</a>
@@ -261,7 +376,7 @@
     </div>
   </section>
 
-  <!-- Modal Autenticación (mejorado con tabs) -->
+  <!-- Modal Autenticación -->
   <div class="modal fade auth-modal" id="authModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content bg-dark text-light overflow-hidden">
@@ -278,7 +393,6 @@
             </li>
           </ul>
           <div class="tab-content">
-            <!-- Login -->
             <div class="tab-pane fade show active" id="login">
               <form>
                 <div class="mb-3 input-group">
@@ -295,7 +409,6 @@
                 </button>
               </form>
             </div>
-            <!-- Registro -->
             <div class="tab-pane fade" id="register">
               <form>
                 <div class="mb-3 input-group">
@@ -319,7 +432,7 @@
     </div>
   </div>
 
-  <!-- Modal Agregar/Editar Producto (sin cambios) -->
+  <!-- Modal Agregar/Editar Producto -->
   <div class="modal fade" id="addProductModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
       <div class="modal-content bg-dark text-light">
@@ -385,7 +498,7 @@
     </div>
   </div>
 
-  <!-- Firebase (sin cambios en lógica, solo aseguramos que todo funcione) -->
+  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -467,7 +580,6 @@
       await loadProducts();
     });
 
-    // Funciones de login, register, googleSignIn (sin cambios)
     window.login = async () => {
       const email = document.getElementById('loginEmail').value.trim();
       const pass = document.getElementById('loginPassword').value;
@@ -497,7 +609,194 @@
       } catch (e) { alert("Error: " + e.message); }
     };
 
-    // ... (resto de funciones: confirmQuantity, editProduct, deleteProduct, saveProduct, loadProducts con lápiz admin quedan iguales al código anterior)
+    window.confirmQuantity = (size) => {
+      const input = document.getElementById('qty' + size);
+      const btn = input.parentElement.parentElement.querySelector('.btn-listo');
+      const val = parseInt(input.value);
+      if (isNaN(val) || val < 0) {
+        input.value = 0;
+        alert("Cantidad inválida");
+        return;
+      }
+      btn.classList.add('confirmed');
+      btn.textContent = '¡Confirmado!';
+    };
+
+    document.getElementById('prodImages').addEventListener('change', (e) => {
+      const preview = document.getElementById('imagePreview');
+      preview.innerHTML = '';
+      for (let file of e.target.files) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const img = document.createElement('img');
+          img.src = ev.target.result;
+          img.className = 'preview-img';
+          preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    window.editProduct = async (productId) => {
+      // (código completo de editProduct igual que antes)
+      try {
+        const docSnap = await getDoc(doc(db, "products", productId));
+        if (!docSnap.exists()) {
+          alert("Producto no encontrado");
+          return;
+        }
+        const data = docSnap.data();
+
+        document.getElementById('prodTitle').value = data.title || '';
+        document.getElementById('prodType').value = data.type || '';
+        document.getElementById('prodDescription').value = data.description || '';
+        document.getElementById('prodPrice').value = data.price || '';
+
+        document.querySelectorAll('.size-checkbox').forEach(cb => {
+          const s = cb.value;
+          const qtyInput = document.getElementById('qty' + s);
+          const box = document.getElementById('quantity' + s);
+          const btn = box.querySelector('.btn-listo');
+          if (data.stock && data.stock[s] > 0) {
+            cb.checked = true;
+            qtyInput.value = data.stock[s];
+            box.style.display = 'block';
+            btn.classList.add('confirmed');
+            btn.textContent = '¡Confirmado!';
+          } else {
+            cb.checked = false;
+            qtyInput.value = 0;
+            box.style.display = 'none';
+            btn.classList.remove('confirmed');
+            btn.textContent = 'Listo';
+          }
+        });
+
+        const preview = document.getElementById('imagePreview');
+        preview.innerHTML = '';
+        if (data.images && data.images.length > 0) {
+          data.images.forEach(url => {
+            const img = document.createElement('img');
+            img.src = url;
+            img.className = 'preview-img';
+            preview.appendChild(img);
+          });
+        }
+
+        document.querySelector('#addProductModal .modal-title').textContent = 'Editar Producto';
+
+        editMode = true;
+        currentProductId = productId;
+
+        const modal = new bootstrap.Modal(document.getElementById('addProductModal'));
+        modal.show();
+      } catch (err) {
+        console.error(err);
+        alert("Error al cargar el producto");
+      }
+    };
+
+    window.deleteProduct = async (productId) => {
+      if (!confirm("¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.")) return;
+      try {
+        await deleteDoc(doc(db, "products", productId));
+        const folderRef = ref(storage, `narf-shop/${productId}`);
+        const listResult = await listAll(folderRef);
+        for (const itemRef of listResult.items) {
+          await deleteObject(itemRef);
+        }
+        await loadProducts();
+        alert("Producto eliminado correctamente");
+      } catch (err) {
+        console.error(err);
+        alert("Error al eliminar: " + err.message);
+      }
+    };
+
+    window.saveProduct = async () => {
+      // (código completo de saveProduct igual que antes)
+      const title = document.getElementById('prodTitle').value.trim();
+      const type = document.getElementById('prodType').value.trim();
+      const description = document.getElementById('prodDescription').value.trim();
+      const price = Number(document.getElementById('prodPrice').value);
+      const files = document.getElementById('prodImages').files;
+
+      if (!title || !type || !description || isNaN(price) || price < 0) {
+        alert("Por favor completa todos los campos obligatorios correctamente.");
+        return;
+      }
+
+      const stock = {};
+      let hasStock = false;
+      for (let s = 23; s <= 30; s++) {
+        if (document.getElementById('size' + s).checked) {
+          const qty = parseInt(document.getElementById('qty' + s).value) || 0;
+          if (qty > 0) {
+            stock[s] = qty;
+            hasStock = true;
+          }
+        }
+      }
+      if (!hasStock) {
+        alert("Debes indicar al menos una talla con cantidad mayor a 0.");
+        return;
+      }
+
+      if (!editMode && files.length === 0) {
+        alert("Debes seleccionar al menos una imagen para un producto nuevo.");
+        return;
+      }
+
+      const wasEdit = editMode;
+
+      try {
+        let productId = currentProductId;
+        let existingImages = [];
+
+        if (editMode) {
+          const snap = await getDoc(doc(db, "products", currentProductId));
+          existingImages = snap.data()?.images || [];
+          await updateDoc(doc(db, "products", currentProductId), { title, type, description, price, stock });
+        } else {
+          const docRef = await addDoc(collection(db, "products"), { title, type, description, price, stock, images: [] });
+          productId = docRef.id;
+        }
+
+        const newUrls = [];
+        if (files.length > 0) {
+          for (let file of files) {
+            const storageRef = ref(storage, `narf-shop/${productId}/${Date.now()}_${file.name}`);
+            await uploadBytes(storageRef, file);
+            const url = await getDownloadURL(storageRef);
+            newUrls.push(url);
+          }
+        }
+
+        const finalImages = editMode ? [...existingImages, ...newUrls] : newUrls;
+
+        await updateDoc(doc(db, "products", productId), { images: finalImages });
+
+        bootstrap.Modal.getInstance(document.getElementById('addProductModal')).hide();
+        document.getElementById('addProductForm').reset();
+        document.getElementById('imagePreview').innerHTML = '';
+        document.querySelectorAll('.size-quantity-box').forEach(b => b.style.display = 'none');
+        document.querySelectorAll('.btn-listo').forEach(b => {
+          b.classList.remove('confirmed');
+          b.textContent = 'Listo';
+        });
+        document.querySelectorAll('.size-checkbox').forEach(cb => cb.checked = false);
+        document.querySelector('#addProductModal .modal-title').textContent = 'Agregar Nuevo Producto';
+
+        editMode = false;
+        currentProductId = null;
+
+        await loadProducts();
+        alert(wasEdit ? "¡Producto actualizado exitosamente!" : "¡Producto agregado exitosamente!");
+      } catch (err) {
+        console.error(err);
+        alert("Error al guardar: " + err.message);
+      }
+    };
 
     async function loadProducts() {
       const container = document.getElementById('productsContainer');
