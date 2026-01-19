@@ -6,14 +6,16 @@
   <title>Sneakers Premium • Hermosillo</title>
   <style>
     :root {
-      --deep-navy:    #08121d;        /* Fondo principal - azul marino muy profundo */
-      --navy-dark:    #0a1625;        /* Variación ligeramente más clara para capas */
-      --gold-premium: #d4af37;        /* Dorado metálico principal - muy atractivo */
-      --gold-light:   #e6c567;        /* Dorado más brillante para hover y brillos */
+      --deep-navy:    #08121d;        /* Azul marino profundo para seriedad */
+      --navy-dark:    #0a1625;        /* Variación para capas */
+      --gold-premium: #d4af37;        /* Dorado metálico principal - atractivo y juvenil */
+      --gold-light:   #ffd700;        /* Dorado más brillante para brillos y rayos (toque juvenil) */
       --gold-dark:    #b8972e;        /* Dorado oscuro para profundidad */
-      --text-light:   #f8f9fa;
-      --text-muted:   #c5ccd6;
-      --shadow-gold:  rgba(212, 175, 55, 0.35);
+      --text-black:   #000000;        /* Negro para letras principales */
+      --text-white:   #ffffff;        /* Blanco para textos pequeños/subtítulos */
+      --text-muted:   #c5ccd6;        /* Gris muted para otros textos */
+      --shadow-gold:  rgba(255, 215, 0, 0.45); /* Brillo dorado para sombras */
+      --accent-yellow: #ffcc00;       /* Toque juvenil amarillo-dorado para energía */
     }
 
     * {
@@ -25,212 +27,10 @@
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
       background-color: var(--deep-navy);
-      color: var(--text-light);
+      color: var(--text-white);
       line-height: 1.6;
     }
 
-    /* Header - impacto visual máximo */
+    /* Header - concepto actualizado con letras negras + brillo dorado */
     header {
-      background: linear-gradient(to bottom, rgba(8,18,29,0.92), rgba(8,18,29,0.85)),
-                  url('https://images.stockx.com/images/Alexander-McQueen-Oversized-Light-Gold-Product.jpg?fit=fill&bg=FFFFFF&w=1400&h=1000&fm=webp&auto=compress&q=90') center / cover;
-      background-blend-mode: multiply;
-      padding: 8rem 2rem 9rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Rayo dorado dinámico y elegante */
-    header::before {
-      content: '';
-      position: absolute;
-      inset: -50%;
-      background: linear-gradient(
-        135deg,
-        transparent 40%,
-        rgba(212,175,55,0.5) 48%,
-        rgba(230,197,103,0.8) 52%,
-        rgba(212,175,55,0.5) 56%,
-        transparent 64%
-      );
-      transform: rotate(32deg);
-      animation: rayo 12s infinite linear;
-      opacity: 0.7;
-      pointer-events: none;
-    }
-
-    @keyframes rayo {
-      0%   { transform: translateX(-130%) rotate(32deg); }
-      100% { transform: translateX(130%)  rotate(32deg); }
-    }
-
-    /* NF sutil en fondo */
-    header::after {
-      content: "NF  NF  NF";
-      position: absolute;
-      inset: 0;
-      font-size: 22rem;
-      font-weight: 900;
-      color: rgba(0,0,0,0.22);
-      letter-spacing: -1.2rem;
-      line-height: 0.6;
-      pointer-events: none;
-      user-select: none;
-      opacity: 0.3;
-    }
-
-    .logo {
-      font-size: 5.2rem;
-      font-weight: 900;
-      letter-spacing: 10px;
-      color: var(--gold-premium);
-      text-transform: uppercase;
-      text-shadow: 0 8px 30px var(--shadow-gold);
-      margin-bottom: 1.2rem;
-      position: relative;
-      z-index: 2;
-    }
-
-    .tagline {
-      font-size: 2.2rem;
-      font-weight: 300;
-      color: var(--text-muted);
-      margin-bottom: 2rem;
-      max-width: 820px;
-      margin-left: auto;
-      margin-right: auto;
-      position: relative;
-      z-index: 2;
-    }
-
-    .pitch {
-      font-size: 1.65rem;
-      color: var(--gold-light);
-      font-weight: 500;
-      margin: 2.2rem 0 4rem;
-      letter-spacing: 1.3px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .cta-button {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--gold-premium), var(--gold-light));
-      color: var(--deep-navy);
-      font-size: 1.9rem;
-      font-weight: bold;
-      padding: 1.5rem 4.5rem;
-      border-radius: 70px;
-      text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 3.5px;
-      box-shadow: 0 12px 40px var(--shadow-gold);
-      transition: all 0.4s ease;
-      position: relative;
-      z-index: 2;
-    }
-
-    .cta-button:hover {
-      background: linear-gradient(135deg, var(--gold-light), var(--gold-premium));
-      transform: translateY(-8px) scale(1.04);
-      box-shadow: 0 25px 60px rgba(212,175,55,0.55);
-    }
-
-    /* Navegación */
-    nav {
-      background-color: rgba(8,18,29,0.96);
-      backdrop-filter: blur(14px);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      padding: 1.6rem 2rem;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.65);
-    }
-
-    .nav-container {
-      max-width: 1240px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: center;
-      gap: 7rem;
-    }
-
-    .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-decoration: none;
-      color: var(--text-light);
-      transition: all 0.4s ease;
-    }
-
-    .nav-item:hover {
-      color: var(--gold-premium);
-      transform: translateY(-10px);
-    }
-
-    .nav-item img {
-      width: 130px;
-      height: 130px;
-      object-fit: contain;
-      margin-bottom: 1.4rem;
-      filter: drop-shadow(0 8px 20px rgba(0,0,0,0.75));
-    }
-
-    .nav-item span {
-      font-size: 1.5rem;
-      font-weight: 600;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      header          { padding: 6.5rem 1.5rem 8rem; }
-      .logo           { font-size: 4rem; }
-      .tagline        { font-size: 1.8rem; }
-      .pitch          { font-size: 1.4rem; }
-      .cta-button     { font-size: 1.6rem; padding: 1.3rem 4rem; }
-      .nav-container  { flex-direction: column; gap: 3.5rem; }
-    }
-  </style>
-</head>
-<body>
-
-  <nav>
-    <div class="nav-container">
-      <a href="#hombre" class="nav-item">
-        <img src="https://www.shutterstock.com/image-vector/mens-shoe-black-silhouette-vector-260nw-2502099183.jpg" alt="Tenis Hombre">
-        <span>Tenis de Hombre</span>
-      </a>
-      
-      <a href="#mujer" class="nav-item">
-        <img src="https://cdn.vectorstock.com/i/1000v/30/89/flat-silhouette-shoes-or-sneakers-icon-set-vector-48123089.jpg" alt="Tenis Mujer">
-        <span>Tenis de Mujer</span>
-      </a>
-    </div>
-  </nav>
-
-  <header>
-    <div class="logo">SNEAKERS PREMIUM</div>
-    
-    <p class="tagline">
-      Los mejores sneakers premium de Hermosillo, Sonora
-    </p>
-
-    <div class="pitch">
-      Estilo que rompe esquemas • Calidad que se siente • Exclusividad que se vive
-    </div>
-    
-    <a href="#catalogo" class="cta-button">COMPRA DIRECTA AQUÍ!!</a>
-  </header>
-
-  <!-- Espacio para tu catálogo -->
-  <main style="padding: 7rem 2rem; text-align: center;">
-    <h2 style="font-size: 4rem; color: var(--gold-premium); margin-bottom: 2.5rem; letter-spacing: 2px;">
-      Colección Exclusiva
-    </h2>
-  </main>
-
-</body>
-</html>
+      background: linear-gradient(to bottom, rgba(8
